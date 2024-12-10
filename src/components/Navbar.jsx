@@ -1,6 +1,9 @@
+import { IKImage } from 'imagekitio-react';
 import React, { useState } from 'react'
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { ImCross } from 'react-icons/im';
+import Image from './Image';
+
 
 const NavLinks = [
     <a href="/">Home</a>,
@@ -19,7 +22,7 @@ const Navbar = () => {
         <div className='w-full h-16 md:h-20 flex items-center justify-between md:border-b-gray-700 md:border-b-2 py-3'>
             {/* logo */}
             <div className='flex items-center gap-4 text-2xl font-bold '>
-                <img src="/logo.png" alt="logo" className='w-8 h-8' />
+                <Image src="logo.png" alt="logo" w={32} h={32}/>
                 <span>Blog Site</span>
             </div>
 
