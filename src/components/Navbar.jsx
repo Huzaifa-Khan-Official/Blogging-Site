@@ -36,12 +36,12 @@ const Navbar = () => {
             {/* mobile Menu */}
             <div className='md:hidden'>
                 {/* mobile btn */}
-                <div className='cursor-pointer text-2xl' onClick={() => setOpen(!open)}>
+                <div className='cursor-pointer text-2xl' onClick={() => setOpen((prev) => !prev)}>
                     {open ? <ImCross /> : <GiHamburgerMenu />}
                 </div>
 
                 {/* mobile link list */}
-                <div className={`w-full h-fit flex flex-col gap-2 text-lg font-medium px-4 z-10 absolute top-16 bg-[#e6e6ff] shadow-2xl transition-all  ease-in-out duration-700 ${open ? "-right-0" : "-right-[100%]"} border-t-gray-700 border-t-2 py-3`}>
+                <div className={`w-full h-fit flex-col gap-2 text-lg font-medium px-4 z-10 absolute top-16 bg-[#e6e6ff] shadow-2xl transition-all  ease-in-out duration-[5000] ${open ? "flex" : "hidden"}  ${open ? "-right-0" : "-right-[100%]"}  border-t-gray-700 border-t-2 py-3`}>
                     {
                         NavLinks.map((link, i) => (
                             <div key={i}>
@@ -62,7 +62,7 @@ const Navbar = () => {
                     ))
                 }
             </div>
-        </div>
+        </div >
     )
 }
 
