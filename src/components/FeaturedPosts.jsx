@@ -11,6 +11,7 @@ const FeaturedPosts = () => {
         <Image
           src="/featured1.jpeg"
           className='rounded-3xl object-cover'
+          w={703}
         />
 
         {/* details */}
@@ -32,10 +33,13 @@ const FeaturedPosts = () => {
         {/* second */}
         <div className='xs:h-1/3 flex flex-col xs:flex-row justify-between gap-4'>
           {/* Image */}
-          <Image
-            src="featured2.jpeg"
-            className='rounded-3xl object-cover w-full xs:w-1/3 aspect-video'
-          />
+          <div className='xs:w-1/3 aspect-video'>
+            <Image
+              src="featured2.jpeg"
+              className='rounded-3xl object-cover w-full h-full max-h-[234px]'
+              w={234}
+            />
+          </div>
 
           {/* details and titles */}
           <div className='w-full sm:w-2/3'>
@@ -62,10 +66,13 @@ const FeaturedPosts = () => {
         {/* third */}
         <div className='xs:h-1/3 flex flex-col xs:flex-row justify-between gap-4'>
           {/* Image */}
-          <Image
-            src="featured2.jpeg"
-            className='rounded-3xl object-cover w-full xs:w-1/3 aspect-video'
-          />
+          <div className='w-full xs:w-1/3 aspect-video'>
+            <Image
+              src="featured3.jpeg"
+              className='rounded-3xl object-cover w-full h-full max-h-[234px]'
+              w={234}
+            />
+          </div>
 
           {/* details and titles */}
           <div className='w-full sm:w-2/3'>
@@ -92,10 +99,13 @@ const FeaturedPosts = () => {
         {/* fourth */}
         <div className='xs:h-1/3 flex flex-col xs:flex-row justify-between gap-4'>
           {/* Image */}
-          <Image
-            src="featured2.jpeg"
-            className='rounded-3xl object-cover w-full xs:w-1/3 aspect-video'
-          />
+          <div className='xs:w-1/3 aspect-video'>
+            <Image
+              src="featured4.jpeg"
+              className='rounded-3xl object-cover w-full h-full max-h-[234px]'
+              w={234}
+            />
+          </div>
 
           {/* details and titles */}
           <div className='w-full sm:w-2/3'>
