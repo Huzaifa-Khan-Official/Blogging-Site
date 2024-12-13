@@ -22,7 +22,7 @@ const FeaturedPosts = () => {
         </div>
 
         {/* title */}
-        <Link className='text-lg lg:text-3xl font-semibold lg:font-bold'>
+        <Link to="/test" className='text-lg lg:text-3xl font-semibold lg:font-bold'>
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Error, doloremque.
         </Link>
 
