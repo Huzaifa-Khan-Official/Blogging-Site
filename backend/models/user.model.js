@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 
 const userSchema = new Schema({
-    clerkId: {
+    clerkUserId: {
         type: String,
         required: true,
         unique: true,
