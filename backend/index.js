@@ -1,4 +1,5 @@
 import express from "express";
+import { clerkMiddleware, requireAuth } from "@clerk/express";
 
 // Routes
 import userRouter from "./routes/user.route.js";
@@ -9,9 +10,29 @@ import connectDB from "./lib/connectDB.js";
 
 const app = express();
 
+app.use(clerkMiddleware());
 app.use("/webhooks", webHookRouter);
 
 app.use(express.json());
+
+// // for testing purposes
+// app.get("/auth-state", (req, res) => {
+//     const authState = req.auth;
+//     res.json(authState);
+// })
+
+// first approach
+// app.get("/protect", (req, res) => {
+//     const {userId} = req.auth;
+//     if(!userId) return res.status(401).json({message: "not authenticated"});
+
+//     res.status(200).json({message: "authentication successful"});
+// })
+
+// second approach
+// app.get("/protect2", requireAuth(), (req, res) => {
+//     res.status(200).json({ message: "authentication successful" });
+// })
 
 app.use("/users", userRouter);
 app.use("/posts", postRouter);

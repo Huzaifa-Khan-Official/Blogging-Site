@@ -10,6 +10,7 @@ const postSchema = new Schema({
     },
     img: {
         type: String,
+        default: ""
     },
     title: {
         type: String,

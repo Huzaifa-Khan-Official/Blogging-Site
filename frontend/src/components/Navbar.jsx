@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { ImCross } from 'react-icons/im';
 import { Link } from 'react-router-dom';
@@ -8,6 +8,12 @@ import Image from './Image';
 const Navbar = () => {
     const [open, setOpen] = useState(false);
     const { isSignedIn } = useAuth(); // Clerk hook to check signed-in status
+
+    const { getToken } = useAuth();
+
+    useEffect(() => {
+        getToken().then((token) => console.log(token));
+    }, []);
 
     const navLinks = [
         { to: "/", label: "Home" },
