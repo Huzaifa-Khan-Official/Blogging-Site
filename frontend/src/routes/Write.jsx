@@ -15,13 +15,19 @@ const Write = () => {
   const mutation = useMutation({
     mutationFn: async (newPost) => {
       const token = await getToken();
-      return axios.post(`${configuration.apiUrl}/posts`, newPost, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      })
+      try {
+        const response = await axios.post(`${configuration.apiUrl}/posts`, newPost, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        return response.data;
+      } catch (error) {
+        throw error;
+      }
     }
-  })
+  });
+
 
   if (!isLoaded) {
     return <div className=''>
@@ -45,10 +51,10 @@ const Write = () => {
       category: formData.get('category'),
       desc: formData.get('desc'),
       content: value
-    }
+    };
 
     mutation.mutate(data);
-  }
+  };
 
   return (
     <div className='mt-6 min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] flex flex-col gap-6'>
