@@ -1,5 +1,6 @@
 import express from "express";
 import { clerkMiddleware, requireAuth } from "@clerk/express";
+import cors from "cors";
 
 // Routes
 import userRouter from "./routes/user.route.js";
@@ -7,9 +8,11 @@ import postRouter from "./routes/post.route.js";
 import commentRouter from "./routes/comment.route.js";
 import webHookRouter from "./routes/webhook.route.js";
 import connectDB from "./lib/connectDB.js";
+import serverConfig from "./Configurations/server.config.js";
 
 const app = express();
 
+app.use(cors(serverConfig.clientUrl));
 app.use(clerkMiddleware());
 app.use("/webhooks", webHookRouter);
 
