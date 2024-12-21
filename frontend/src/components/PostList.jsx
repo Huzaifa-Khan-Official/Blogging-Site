@@ -1,6 +1,6 @@
 import React from 'react'
 import PostListItem from './PostListItem'
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import axios from "axios";
 import configuration from '../configuration/config';
 import { toast } from 'react-toastify';
