@@ -11,9 +11,9 @@ const Navbar = () => {
 
     const { getToken } = useAuth();
 
-    useEffect(() => {
-        getToken().then((token) => console.log(token));
-    }, []);
+    // useEffect(() => {
+    //     getToken().then((token) => console.log(token));
+    // }, []);
 
     const navLinks = [
         { to: "/", label: "Home" },
