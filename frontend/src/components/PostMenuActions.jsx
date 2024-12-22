@@ -1,10 +1,102 @@
 import React from 'react'
+import { useAuth, useUser } from "@clerk/clerk-react"
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import axios from 'axios'
+import configuration from '../configuration/config.js';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
-const PostMenuActions = () => {
+const PostMenuActions = ({ post }) => {
+  const { user } = useUser();
+  const { getToken } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const { isPending, error, data: savedPosts } = useQuery({
+    queryKey: ['savedPosts'],
+    queryFn: async () => {
+      const token = await getToken();
+      try {
+        const response = await axios.get(`${configuration.apiUrl}/users/saved`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        return response.data;
+      } catch (error) {
+        throw error;
+      }
+    }
+  });
+
+  const isSaved = savedPosts?.some((p) => p === post._id) || false;  
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const token = await getToken();
+      try {
+        return await axios.delete(`${configuration.apiUrl}/posts/${post._id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+      } catch (error) {
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      toast.success("Post deleted successfully", {
+        autoClose: 1000,
+        onClose: () => navigate("/")
+      });
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message);
+    }
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      const token = await getToken();
+      try {
+        return await axios.patch(`${configuration.apiUrl}/users/save`, {
+          postId: post._id
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+      } catch (error) {
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['savedPosts'] });
+      toast.success(isSaved ? "Post unsaved" : "Post saved", {
+        autoClose: 1000
+      });
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message);
+    }
+  });
+
+
+  const handleDelete = () => {
+    deleteMutation.mutate();
+  }
+
+  const handleSave = () => {
+    if (!user) {
+      return navigate("/login");
+    }
+    saveMutation.mutate();
+  }
+
   return (
     <div>
       <h1 className='mt-4 mb-2 text-sm'>Actions</h1>
-      <div className='flex items-center gap-2 py-2 text-sm cursor-pointer'>
+      {isPending ? "Loading..." : error ? "Saved post fetching failed!" : <div className='flex items-center gap-2 py-2 text-sm cursor-pointer' onClick={handleSave} >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 48 48"
@@ -15,13 +107,24 @@ const PostMenuActions = () => {
             d="M12 4C10.3 4 9 5.3 9 7v34l15-9 15 9V7c0-1.7-1.3-3-3-3H12z"
             stroke="black"
             strokeWidth="2"
+            fill={
+              saveMutation.isPending
+                ? isSaved
+                  ? "none"
+                  : "black"
+                : isSaved
+                  ? "black"
+                  : "none"}
           />
         </svg>
 
         <span>Save this post</span>
-      </div>
+        {
+          saveMutation.isPending && <span className='text-sm'>Saving...</span>
+        }
+      </div>}
 
-      <div className='flex items-center gap-2 py-2 text-sm cursor-pointer'>
+      {user && (post.user.username === user.username || post.user.username === user.emailAddresses[0].emailAddress) && (<div className='flex items-center gap-2 py-2 text-sm cursor-pointer' onClick={handleDelete} >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 50 50"
@@ -33,7 +136,10 @@ const PostMenuActions = () => {
         </svg>
 
         <span>Delete this post</span>
-      </div>
+        {
+          deleteMutation.isPending && <span className='text-sm'>Deleting...</span>
+        }
+      </div>)}
     </div>
   )
 }

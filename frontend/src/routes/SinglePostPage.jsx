@@ -108,7 +108,7 @@ const SinglePostPage = () => {
             </div>
           </div>
 
-          <PostMenuActions />
+          <PostMenuActions post={data} />
 
           <h1 className='mt-4 mb-2 text-sm'>Categories</h1>
 
