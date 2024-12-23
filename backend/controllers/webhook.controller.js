@@ -23,6 +23,12 @@ export const clerkWebHook = async (req, res) => {
 
     try {
         if (evt.type === "user.created") {
+            const isUser = await User.findOne({ email: evt.data.email_addresses[0].email_address });
+
+            if (isUser) {
+                return res.status(200).json({ message: "User already exists" });
+            }
+
             const newUser = new User({
                 clerkUserId: evt.data.id,
                 username: evt.data.username || evt.data.email_addresses[0].email_address,
