@@ -7,6 +7,55 @@ export const getPosts = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 2;
 
+    const query = {};
+
+    const cat = req.query.cat;
+    const author = req.query.author;
+    const searchQuery = req.query.search;
+    const sortQuery = req.query.sort;
+    const featured = req.query.featured;
+
+    if (cat) {
+        query.category = cat;
+    }
+
+    if (searchQuery) {
+        query.title = { $regex: searchQuery, $options: "i" };
+    }
+
+    if (author) {
+        const user = await User.findOne({ username: author }).select("_id");
+
+        if (!user) {
+            return res.status(404).json({ message: "No post found" });
+        }
+
+        query.user = user._id;
+    }
+
+    if (sortQuery) {
+        switch (sortQuery) {
+            case "newest":
+
+                break;
+                
+            case "oldest":
+
+                break;
+
+            case "popular":
+
+                break;
+
+            case "trending":
+
+                break;
+
+            default:
+                break;
+        }
+    }
+
     const posts = await Post.find().populate("user", "username").limit(limit).skip((page - 1) * limit);
 
     const totalPosts = await Post.countDocuments();

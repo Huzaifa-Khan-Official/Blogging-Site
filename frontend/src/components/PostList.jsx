@@ -5,18 +5,24 @@ import axios from "axios";
 import configuration from "../configuration/config";
 import { toast } from "react-toastify";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useSearchParams } from "react-router-dom";
 
-const fetchPosts = async (pageParam) => {
+const fetchPosts = async (pageParam, searchParams) => {
+  const searchParamsObj = Object.fromEntries([...searchParams]);
+
   const res = await axios.get(`${configuration.apiUrl}/posts`, {
     params: {
       page: pageParam,
       limit: 2,
+      searchParamsObj
     },
   });
   return res.data;
 };
 
 const PostList = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const {
     data,
     error,
@@ -26,7 +32,7 @@ const PostList = () => {
     status,
   } = useInfiniteQuery({
     queryKey: ["posts"],
-    queryFn: ({ pageParam = 1 }) => fetchPosts(pageParam),
+    queryFn: ({ pageParam = 1 }) => fetchPosts(pageParam, searchParams),
     getNextPageParam: (lastPage, pages) =>
       lastPage.hasMore ? pages.length + 1 : undefined,
   });
