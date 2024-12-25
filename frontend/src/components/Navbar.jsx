@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { ImCross } from 'react-icons/im';
 import { Link } from 'react-router-dom';
@@ -13,8 +13,8 @@ const Navbar = () => {
 
     const navLinks = [
         { to: "/", label: "Home" },
-        { to: "/trending", label: "Trending" },
-        { to: "/popular", label: "Most Popular" },
+        { to: "/posts?sort=trending", label: "Trending" },
+        { to: "/posts?sort=popular", label: "Most Popular" },
         { to: "/about", label: "About" }
     ];
 
