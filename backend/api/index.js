@@ -12,24 +12,28 @@ import serverConfig from "../Configurations/server.config.js";
 
 const app = express();
 
-// app.use(cors(serverConfig.clientUrl));
-// console.log("clientUrl ==>", serverConfig.clientUrl);
-
 app.use(clerkMiddleware());
 app.use("/webhooks", webHookRouter);
 
 app.use(express.json());
 
-const allowedOrigins = [serverConfig.clientUrl]; // List of allowed origins
+const allowedOrigins = serverConfig.allowedOrigins;
 
-app.use(function (req, res, next) {
-    const origin = req.headers.origin; // Get the origin from request headers
-    if (allowedOrigins.includes(origin)) {
-        res.header("Access-Control-Allow-Origin", origin); // Allow only specific origins
-    }
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+
+// CORS configuration
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (allowedOrigins.includes(origin) || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true,
+    optionSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 
 // // for testing purposes
 // app.get("/auth-state", (req, res) => {
