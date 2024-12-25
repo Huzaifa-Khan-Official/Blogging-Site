@@ -14,7 +14,7 @@ const fetchPosts = async (pageParam, searchParams) => {
     params: {
       page: pageParam,
       limit: 2,
-      searchParamsObj: JSON.stringify(searchParamsObj),
+      ...searchParamsObj
     },
   });
   return res.data;
@@ -45,9 +45,6 @@ const PostList = () => {
   }
 
   const allPosts = data?.pages?.flatMap((page) => page.posts) || [];
-
-  console.log("allPosts", allPosts);
-  
 
   return (
     <InfiniteScroll

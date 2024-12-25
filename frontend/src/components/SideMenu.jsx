@@ -1,6 +1,6 @@
 import React from 'react'
 import Search from './Search'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 const filterItems = [
     {
@@ -44,7 +44,26 @@ const categoryItems = [
     },
 ]
 
+
+
 const SideMenu = () => {
+
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const handleFilterChange = (e) => {
+        setSearchParams({
+            ...Object.fromEntries(searchParams.entries()),
+            sort: e.target.value,
+        });
+    }
+
+    const handleCategoryChange = (category) => {
+        setSearchParams({
+            ...Object.fromEntries(searchParams.entries()),
+            cat: category,
+        });
+    }
+
     return (
         <div className='px-4 h-max sticky top-6'>
             <h1 className='mb-4 text-sm font-medium'>Search</h1>
@@ -55,7 +74,13 @@ const SideMenu = () => {
                 {
                     filterItems.map(item => (
                         <label key={item.value} className='flex items-center gap-2 cursor-pointer'>
-                            <input type="radio" name='sort' value={item.value} className='appearance-none w-4 h-4 border-[1.5px] border-blue-800 cursor-pointer rounded-sm bg-white checked:bg-blue-800' />
+                            <input
+                                type="radio"
+                                name='sort'
+                                value={item.value}
+                                className='appearance-none w-4 h-4 border-[1.5px] border-blue-800 cursor-pointer rounded-sm bg-white checked:bg-blue-800'
+                                onChange={handleFilterChange}
+                            />
                             {item.label}
                         </label>
                     ))
@@ -67,9 +92,9 @@ const SideMenu = () => {
                 <Link className='underline' to="/posts">All</Link>
                 {
                     categoryItems.map(item => (
-                        <Link key={item.value} className='underline' to={`/posts?cat=${item.value}`}>
+                        <span key={item.value} className='underline cursor-pointer' onClick={() => handleCategoryChange(item.value)}>
                             {item.label}
-                        </Link>
+                        </span>
                     ))
                 }
             </div>

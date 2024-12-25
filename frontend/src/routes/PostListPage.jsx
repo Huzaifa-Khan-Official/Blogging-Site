@@ -11,7 +11,7 @@ const PostListPage = () => {
 
       <button onClick={() => setOpen(!open)} className='bg-blue-800 text-sm text-white px-4 py-2 rounded-2xl mb-4 md:hidden'>{open ? "Close" : "Filter or Search"}</button>
 
-      <div className='flex flex-col-reverse md:flex-row gap-8'>
+      <div className='flex flex-col-reverse justify-between md:flex-row gap-8'>
         {/* Post Lists */}
         <div className=''>
           <PostList />

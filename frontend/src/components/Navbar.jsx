@@ -11,10 +11,6 @@ const Navbar = () => {
 
     const { getToken } = useAuth();
 
-    // useEffect(() => {
-    //     getToken().then((token) => console.log(token));
-    // }, []);
-
     const navLinks = [
         { to: "/", label: "Home" },
         { to: "/trending", label: "Trending" },
@@ -25,10 +21,10 @@ const Navbar = () => {
     return (
         <div className='w-full h-16 md:h-20 flex items-center justify-between md:border-b-gray-700 md:border-b-2 py-3'>
             {/* logo */}
-            <div className='flex items-center gap-4 text-2xl font-bold '>
+            <Link className='flex items-center gap-4 text-2xl font-bold ' to="/">
                 <Image src="logo.png" alt="logo" w={32} h={32} />
                 <span>Blog Site</span>
-            </div>
+            </Link>
 
             {/* mobile Menu */}
             <div className='md:hidden'>

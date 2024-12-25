@@ -1,5 +1,6 @@
 import express from "express";
 import { createPost, deletePost, featurePost, getPost, getPosts, uploadAuth } from "../controllers/post.controller.js";
+import increaseVisit from "../middlewares/increaseVisit.js";
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ router.route("/")
     .post(createPost); // create a new post
 
 // Get single post by slug
-router.get("/:slug", getPost);
+router.get("/:slug", increaseVisit, getPost);
 // Delete a single post
 router.delete("/:id", deletePost);
 

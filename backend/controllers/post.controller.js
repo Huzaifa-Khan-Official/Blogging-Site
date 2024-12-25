@@ -9,16 +9,11 @@ export const getPosts = async (req, res) => {
 
     const query = {};
 
-    const searchParamsObj = req.query['searchParamsObj'];
-
-    const parsedSearchParams = typeof searchParamsObj === 'string'
-        ? JSON.parse(searchParamsObj)
-        : searchParamsObj;
-
-    const cat = parsedSearchParams?.cat || req.query.cat;
-    const author = parsedSearchParams?.author || req.query.author;
+    const cat = req.query.cat;
+    const author = req.query.author;
     const searchQuery = req.query.search;
     const sortQuery = req.query.sort;
+    console.log("sortQuery: " + sortQuery);
     const featured = req.query.featured;
 
     if (cat) {
@@ -39,33 +34,32 @@ export const getPosts = async (req, res) => {
         query.user = user._id;
     }
 
-    let sortObj = { createdAt: -1 }
+    let sortObj = { createdAt: -1 };
 
     if (sortQuery) {
         switch (sortQuery) {
             case "newest":
                 sortObj = { createdAt: -1 }
                 break;
-
             case "oldest":
                 sortObj = { createdAt: 1 }
                 break;
-
             case "popular":
                 sortObj = { visit: -1 }
                 break;
-
             case "trending":
                 sortObj = { visit: -1 }
                 query.createdAt = {
                     $gte: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
                 }
                 break;
-
             default:
                 break;
         }
     }
+
+    console.log("sortQuery ==>", sortQuery);
+    console.log("sortObj ==>", sortObj);
 
     const posts = await Post.find(query)
         .populate("user", "username")
