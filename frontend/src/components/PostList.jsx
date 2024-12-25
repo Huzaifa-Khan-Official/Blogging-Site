@@ -14,7 +14,7 @@ const fetchPosts = async (pageParam, searchParams) => {
     params: {
       page: pageParam,
       limit: 2,
-      searchParamsObj
+      searchParamsObj: JSON.stringify(searchParamsObj),
     },
   });
   return res.data;
@@ -31,7 +31,7 @@ const PostList = () => {
     isFetchingNextPage,
     status,
   } = useInfiniteQuery({
-    queryKey: ["posts"],
+    queryKey: ["posts", searchParams.toString()],
     queryFn: ({ pageParam = 1 }) => fetchPosts(pageParam, searchParams),
     getNextPageParam: (lastPage, pages) =>
       lastPage.hasMore ? pages.length + 1 : undefined,
@@ -45,6 +45,9 @@ const PostList = () => {
   }
 
   const allPosts = data?.pages?.flatMap((page) => page.posts) || [];
+
+  console.log("allPosts", allPosts);
+  
 
   return (
     <InfiniteScroll

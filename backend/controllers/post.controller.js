@@ -9,8 +9,14 @@ export const getPosts = async (req, res) => {
 
     const query = {};
 
-    const cat = req.query.cat;
-    const author = req.query.author;
+    const searchParamsObj = req.query['searchParamsObj'];
+
+    const parsedSearchParams = typeof searchParamsObj === 'string'
+        ? JSON.parse(searchParamsObj)
+        : searchParamsObj;
+
+    const cat = parsedSearchParams?.cat || req.query.cat;
+    const author = parsedSearchParams?.author || req.query.author;
     const searchQuery = req.query.search;
     const sortQuery = req.query.sort;
     const featured = req.query.featured;
@@ -33,22 +39,27 @@ export const getPosts = async (req, res) => {
         query.user = user._id;
     }
 
+    let sortObj = { createdAt: -1 }
+
     if (sortQuery) {
         switch (sortQuery) {
             case "newest":
-
+                sortObj = { createdAt: -1 }
                 break;
-                
-            case "oldest":
 
+            case "oldest":
+                sortObj = { createdAt: 1 }
                 break;
 
             case "popular":
-
+                sortObj = { visit: -1 }
                 break;
 
             case "trending":
-
+                sortObj = { visit: -1 }
+                query.createdAt = {
+                    $gte: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
+                }
                 break;
 
             default:
@@ -56,9 +67,13 @@ export const getPosts = async (req, res) => {
         }
     }
 
-    const posts = await Post.find().populate("user", "username").limit(limit).skip((page - 1) * limit);
+    const posts = await Post.find(query)
+        .populate("user", "username")
+        .sort(sortObj)
+        .limit(limit)
+        .skip((page - 1) * limit);
 
-    const totalPosts = await Post.countDocuments();
+    const totalPosts = await Post.countDocuments(query);
     const hasMore = page * limit < totalPosts;
 
     res.status(200).json({ posts, hasMore });
