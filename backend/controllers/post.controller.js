@@ -5,7 +5,7 @@ import serverConfig from "../Configurations/server.config.js";
 
 export const getPosts = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 2;
+    const limit = parseInt(req.query.limit) || 5;
 
     const query = {};
 

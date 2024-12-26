@@ -7,7 +7,7 @@ import Image from './Image';
 
 const Navbar = () => {
     const [open, setOpen] = useState(false);
-    const { isSignedIn } = useAuth(); // Clerk hook to check signed-in status
+    const { isSignedIn } = useAuth();
 
     const { getToken } = useAuth();
 

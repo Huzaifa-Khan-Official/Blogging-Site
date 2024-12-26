@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom'
 import MainCategories from '../components/MainCategories'
 import FeaturedPosts from '../components/FeaturedPosts'
 import PostList from '../components/PostList'
+import { useAuth } from '@clerk/clerk-react'
 
 const HomePage = () => {
+  const { isSignedIn } = useAuth();
+
   return (
     <div className='mt-4 flex flex-col gap-4'>
       {/* Breadcrumb */}
@@ -23,7 +26,7 @@ const HomePage = () => {
         </div>
 
         {/* animated button */}
-        <Link to="write" className='hidden md:block relative'>
+        <Link to={`${!isSignedIn ? "/login" : "write"}`} className='hidden md:block relative'>
           <svg
             viewBox="0 0 200 200"
             width="200"
@@ -68,7 +71,7 @@ const HomePage = () => {
 
       {/* featured posts */}
       <FeaturedPosts />
-      
+
       {/* post list */}
       <div className=''>
         <h1 className="my-8 text-2xl text-gray-600">Recent Posts</h1>

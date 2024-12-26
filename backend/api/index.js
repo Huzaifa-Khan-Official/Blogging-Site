@@ -1,7 +1,7 @@
 import express from "express";
 import { clerkMiddleware, requireAuth } from "@clerk/express";
 import cors from "cors";
-import path from "path";
+import dotenv from "dotenv";
 
 // Routes
 import userRouter from "../routes/user.route.js";
@@ -12,25 +12,29 @@ import connectDB from "../lib/connectDB.js";
 import serverConfig from "../Configurations/server.config.js";
 
 const app = express();
-const port = serverConfig.clientUrl || 3000;
-const __dirname = path.resolve();
+dotenv.config();
+const port = serverConfig.port || 3000;
 
 app.use(clerkMiddleware());
 app.use("/webhooks", webHookRouter);
 
 app.use(express.json());
 
-const allowedOrigins = serverConfig.allowedOrigins;
+const allowedOrigins = [process.env.AllowedOrigin1, process.env.AllowedOrigin2];
 
 // CORS configuration
 const corsOptions = {
     origin: (origin, callback) => {
+        console.log("Incoming request origin:", origin); // Debugging line
         if (allowedOrigins.includes(origin) || !origin) {
             callback(null, true);
         } else {
+            console.error(`Blocked by CORS: ${origin}`);
             callback(new Error("Not allowed by CORS"));
         }
     },
+    methods: ["GET, POST, PUT, DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
     optionSuccessStatus: 200,
 };
@@ -41,7 +45,7 @@ app.use(cors(corsOptions));
 // app.get("/auth-state", (req, res) => {
 //     const authState = req.auth;
 //     res.json(authState);
-// })
+// })   
 
 // first approach
 // app.get("/protect", (req, res) => {
@@ -60,14 +64,6 @@ app.use("/users", userRouter);
 app.use("/posts", postRouter);
 app.use("/comments", commentRouter);
 
-if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "../frontend/dist")))
-
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
-    })
-}
-
 app.use((error, req, res, next) => {
 
     res.status(error.status || 500);
@@ -79,7 +75,7 @@ app.use((error, req, res, next) => {
     });
 })
 
-app.listen(serverConfig.clientUrl, () => {
+app.listen(port, () => {
     connectDB();
-    console.log("Server is running on port:", serverConfig.clientUrl);
+    console.log("Server is running on port:", port);
 })
