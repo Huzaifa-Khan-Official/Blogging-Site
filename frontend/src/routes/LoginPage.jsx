@@ -1,8 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Image from '../components/Image'
 import { Link } from 'react-router-dom'
+import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6'
 
 const LoginPage = () => {
+  const [showPassword, setShowPassword] = useState(false)
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className='flex items-center justify-center min-h-[calc(100vh-80px)]'>
       <div className="my-6 flex items-center pb-6 flex-col bg-gray-50 rounded-2xl justify-center">
@@ -32,7 +39,7 @@ const LoginPage = () => {
           </div>
 
           {/* Password Input */}
-          <div className="mb-6">
+          <div className="mb-6 relative">
             <label
               htmlFor="password"
               className="block text-sm font-medium text-gray-700 mb-2"
@@ -40,11 +47,14 @@ const LoginPage = () => {
               Password
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent placeholder-gray-400 text-sm"
-              placeholder="Enter password"
+              placeholder="Enter your password"
             />
+            <div className='absolute bottom-[10px] right-4 cursor-pointer hover:scale-105' onClick={handleShowPassword}>
+              {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+            </div>
           </div>
 
           {/* Continue Button */}
