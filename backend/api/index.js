@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 // Routes
 import userRouter from "../routes/user.route.js";
 import postRouter from "../routes/post.route.js";
+import authRouter from "../routes/auth.route.js";
 import commentRouter from "../routes/comment.route.js";
 import webHookRouter from "../routes/webhook.route.js";
 import connectDB from "../lib/connectDB.js";
@@ -61,6 +62,7 @@ app.use(cors(corsOptions));
 // })
 
 app.use("/users", userRouter);
+app.use("/auth", authRouter);
 app.use("/posts", postRouter);
 app.use("/comments", commentRouter);
 
