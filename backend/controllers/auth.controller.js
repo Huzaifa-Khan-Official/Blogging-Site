@@ -35,11 +35,17 @@ export const signup = async (req, res) => {
         });
 
         if (newUser) {
-            generateToken(newUser._id, res);           
+            generateToken(newUser._id, res);
             await newUser.save();
 
             res.status(201).json({
-                 message: "Signup Successfully"
+                message: "Signup Successfully",
+                data: {
+                    id: newUser._id,
+                    username: newUser.username,
+                    email: newUser.email,
+                    img: newUser.img ? newUser.img : ""
+                }
             })
         } else {
             res.status(400).json({
@@ -72,13 +78,18 @@ export const login = async (req, res) => {
             })
         }
 
+        console.log("all ok");
+
         generateToken(user._id, res);
 
-        res.json({
-            _id: user._id,
-            fullName: user.fullName,
-            email: user.email,
-            profilePic: user.profilePic,
+        return res.json({
+            message: "Login successful",
+            data: {
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                img: user.img ? user.img : "F",
+            },
         })
     } catch (error) {
         console.log("Error in login controller", error.message);

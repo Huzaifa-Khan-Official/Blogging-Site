@@ -4,12 +4,12 @@ import { ImCross } from 'react-icons/im';
 import { Link } from 'react-router-dom';
 import { SignedIn, SignedOut, useAuth, UserButton } from '@clerk/clerk-react';
 import Image from './Image';
+import { useAuthStore } from '../store/useAuthStore';
 
 const Navbar = () => {
+    const { authUser, logout } = useAuthStore();
     const [open, setOpen] = useState(false);
     const { isSignedIn } = useAuth();
-
-    const { getToken } = useAuth();
 
     const navLinks = [
         { to: "/", label: "Home" },
@@ -40,15 +40,15 @@ const Navbar = () => {
                             <Link to={link.to}>{link.label}</Link>
                         </div>
                     ))}
-                    {!isSignedIn ? (
+                    {!authUser ? (
                         <Link to="/login">
                             <button className='py-2 px-4 rounded-3xl bg-blue-800 text-white'>Login 👋</button>
                         </Link>
                     ) : (
                         <div>
-                            <SignedIn>
-                                <UserButton />
-                            </SignedIn>
+                            <button className='py-2 px-4 rounded-3xl bg-blue-800 text-white' onClick={logout}>
+                                Logout
+                            </button>
                         </div>
                     )}
                 </div>
@@ -61,16 +61,16 @@ const Navbar = () => {
                         <Link to={link.to}>{link.label}</Link>
                     </div>
                 ))}
-                {!isSignedIn && (
+                {!authUser && (
                     <Link to="/login">
                         <button className='py-2 px-4 rounded-3xl bg-blue-800 text-white'>Login 👋</button>
                     </Link>
                 )}
-                {isSignedIn && (
+                {authUser && (
                     <div>
-                        <SignedIn>
-                            <UserButton />
-                        </SignedIn>
+                        <button className='py-2 px-4 rounded-3xl bg-blue-800 text-white' onClick={logout}>
+                            Logout
+                        </button>
                     </div>
                 )}
             </div>

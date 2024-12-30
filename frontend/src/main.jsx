@@ -62,7 +62,7 @@ createRoot(document.getElementById('root')).render(
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
-        <ToastContainer position='bottom-right' />
+        <ToastContainer position='bottom-right' autoClose={2000}/>
       </QueryClientProvider>
     </ClerkProvider>
   </StrictMode>,

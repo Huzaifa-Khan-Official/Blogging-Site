@@ -14,7 +14,6 @@ import { useAuthStore } from "../store/useAuthStore"
 const RegisterPage = () => {
   const { signup, isSigninpUp } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
   const {
@@ -29,7 +28,6 @@ const RegisterPage = () => {
   };
 
   const handleGoogleBtnClick = () => {
-    setLoading(true);
     signInWithPopup(auth, provider)
       .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -42,17 +40,11 @@ const RegisterPage = () => {
           img: user.photoURL,
         };
 
-        setLoading(false);
       }).catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         const email = error.customData.email;
         const credential = GoogleAuthProvider.credentialFromError(error);
-
-        setLoading(false);
-        toast.error(errorMessage, {
-          autoClose: 2000
-        })
       });
   };
 
@@ -146,7 +138,7 @@ const RegisterPage = () => {
                     message: "Password must be at least 6 characters long"
                   },
                   pattern: {
-                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
                     message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
                   }
                 })}

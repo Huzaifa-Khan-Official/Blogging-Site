@@ -1,7 +1,6 @@
 import { create } from "zustand";
-import configuration from "../configuration/config";
-import axios from "axios";
 import { axiosInstance } from "../lib/axios";
+import { toast } from "react-toastify";
 
 export const useAuthStore = create((set, get) => ({
     authUser: null,
@@ -17,7 +16,6 @@ export const useAuthStore = create((set, get) => ({
             set({ authUser: res.data });
 
         } catch (error) {
-            console.log("Error in checkAuth: ", error);
             set({ authUser: null });
         } finally {
             set({ isCheckingAuth: false });
@@ -28,14 +26,14 @@ export const useAuthStore = create((set, get) => ({
         set({ isSigningUp: true });
         try {
             const res = await axiosInstance.post("/auth/signup", data)
-            set({ authUser: res.data });
+            set({ authUser: res.data.data });
             toast.success("Account created successfully", {
                 autoClose: 2000,
             });
         } catch (error) {
-            console.log("error ==>", error);
-
-            toast.error(error.response.data.message);
+            toast.error(error.response.data.message, {
+                autoClose: 2000,
+            });
         } finally {
             set({ isSigningUp: false });
         }
@@ -49,7 +47,9 @@ export const useAuthStore = create((set, get) => ({
             toast.success("Logged in successfully");
 
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.response.data.message, {
+                autoClose: 2000,
+            });
         } finally {
             set({ isLoggingIn: false });
         }

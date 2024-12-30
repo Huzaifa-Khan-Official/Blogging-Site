@@ -2,6 +2,7 @@ import express from "express";
 import { clerkMiddleware, requireAuth } from "@clerk/express";
 import cors from "cors";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
 // Routes
 import userRouter from "../routes/user.route.js";
@@ -20,6 +21,7 @@ app.use(clerkMiddleware());
 app.use("/webhooks", webHookRouter);
 
 app.use(express.json());
+app.use(cookieParser());
 
 const allowedOrigins = [process.env.AllowedOrigin1, process.env.AllowedOrigin2];
 
