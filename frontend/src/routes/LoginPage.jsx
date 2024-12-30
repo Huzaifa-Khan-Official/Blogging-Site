@@ -2,13 +2,24 @@ import React, { useState } from 'react'
 import Image from '../components/Image'
 import { Link } from 'react-router-dom'
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6'
+import { useForm } from 'react-hook-form'
 
 const LoginPage = () => {
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm();
 
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
+  const onSubmit = (data) => {
+
+  }
 
   return (
     <div className='flex items-center justify-center min-h-[calc(100vh-80px)]'>
@@ -22,46 +33,56 @@ const LoginPage = () => {
             </p>
           </div>
 
-          {/* Email Input */}
-          <div className="mb-6">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Email address or username
-            </label>
-            <input
-              type="text"
-              id="email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent placeholder-gray-400 text-sm"
-              placeholder="Enter email or username"
-            />
-          </div>
-
-          {/* Password Input */}
-          <div className="mb-6 relative">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Password
-            </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              id="password"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent placeholder-gray-400 text-sm"
-              placeholder="Enter your password"
-            />
-            <div className='absolute bottom-[10px] right-4 cursor-pointer hover:scale-105' onClick={handleShowPassword}>
-              {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {/* Email Input */}
+            <div className="mb-6">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Email address or username
+              </label>
+              <input
+                type="text"
+                id="email"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent placeholder-gray-400 text-sm"
+                placeholder="Enter email or username"
+                {
+                ...register("email", {
+                  required: {
+                    value: true,
+                    message: "Please enter your email or username"
+                  }
+                })
+                }
+              />
             </div>
-          </div>
 
-          {/* Continue Button */}
-          <button className="w-full bg-gray-900 text-white rounded-lg py-2 px-4 hover:bg-gray-800 transition-colors flex items-center justify-center">
-            <span>Continue</span>
-            <span className="ml-2">→</span>
-          </button>
+            {/* Password Input */}
+            <div className="mb-6 relative">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Password
+              </label>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent placeholder-gray-400 text-sm"
+                placeholder="Enter your password"
+              />
+              <div className='absolute bottom-[10px] right-4 cursor-pointer hover:scale-105' onClick={handleShowPassword}>
+                {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+              </div>
+            </div>
+
+            {/* Continue Button */}
+            <button className="w-full bg-gray-900 text-white rounded-lg py-2 px-4 hover:bg-gray-800 transition-colors flex items-center justify-center" type='submit'>
+              <span>Continue</span>
+              <span className="ml-2">→</span>
+            </button>
+          </form>
 
           {/* Divider */}
           <div className="relative my-6">

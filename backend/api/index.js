@@ -26,7 +26,6 @@ const allowedOrigins = [process.env.AllowedOrigin1, process.env.AllowedOrigin2];
 // CORS configuration
 const corsOptions = {
     origin: (origin, callback) => {
-        console.log("Incoming request origin:", origin); // Debugging line
         if (allowedOrigins.includes(origin) || !origin) {
             callback(null, true);
         } else {
