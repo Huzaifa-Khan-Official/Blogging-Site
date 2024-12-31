@@ -1,29 +1,22 @@
 import React from 'react'
 import Image from './Image'
 import { format } from 'timeago.js'
-import { useAuth, useUser } from "@clerk/clerk-react";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import axios from 'axios';
-import configuration from '../configuration/config';
+import { useAuthStore } from '../store/useAuthStore';
+import { axiosInstance } from '../lib/axios';
 
 const Comment = ({ comment, postId }) => {
-    const { user } = useUser();
-    const { getToken } = useAuth();
+    const { authUser } = useAuthStore();
 
-    const role = user?.publicMetadata?.role || false;
+    const role = authUser?.role || false;
 
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
         mutationFn: async () => {
-            const token = await getToken();
             try {
-                const response = await axios.delete(`${configuration.apiUrl}/comments/${comment._id}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                });
+                const response = await axiosInstance.delete(`/comments/${comment._id}`);
                 return response.data;
             } catch (error) {
                 throw error;
@@ -62,7 +55,7 @@ const Comment = ({ comment, postId }) => {
                 <span className='text-sm text-gray-500'>{format(comment.createdAt)}</span>
 
                 {
-                    user && ((comment.user.username === user.username || comment.user.username === user.emailAddresses[0].emailAddress) || role === "admin") &&
+                    authUser && ((comment.user.username === authUser.username || comment.user.username === authUser.email) || role === "admin") &&
                     <span className='text-sm text-red-300 hover:text-red-500 cursor-pointer' onClick={() => mutation.mutate()}>
                         Delete
                         {

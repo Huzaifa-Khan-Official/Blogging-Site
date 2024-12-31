@@ -8,10 +8,10 @@ import configuration from '../configuration/config';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Upload from '../components/Upload';
+import { axiosInstance } from '../lib/axios';
 
 const Write = () => {
 
-  const { isLoaded, isSignedIn } = useUser();
   const { getToken } = useAuth();
   const [value, setValue] = useState('');
   const navigate = useNavigate();
@@ -30,13 +30,8 @@ const Write = () => {
 
   const mutation = useMutation({
     mutationFn: async (newPost) => {
-      const token = await getToken();
       try {
-        const response = await axios.post(`${configuration.apiUrl}/posts`, newPost, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        });
+        const response = await axiosInstance.post("/posts", newPost);
         return response.data;
       } catch (error) {
         throw error;
@@ -49,19 +44,6 @@ const Write = () => {
       });
     }
   });
-
-
-  if (!isLoaded) {
-    return <div className=''>
-      Loading...
-    </div>
-  }
-
-  if (isLoaded && !isSignedIn) {
-    return <div className=''>
-      Please login first!
-    </div>
-  }
 
   const handleSubmit = (e) => {
     e.preventDefault();

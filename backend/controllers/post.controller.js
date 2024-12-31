@@ -81,13 +81,13 @@ export const getPost = async (req, res) => {
 
 export const createPost = async (req, res) => {
     try {
-        const clerkUserId = req.auth.userId;
+        const userId = req.user._id;
 
-        if (!clerkUserId) {
+        if (!userId) {
             return res.status(401).json("Not authenticated!");
         }
 
-        const user = await User.findOne({ clerkUserId });
+        const user = await User.findById(userId);
 
         if (!user) {
             return res.status(404).json("User not found!");
@@ -132,11 +132,11 @@ export const createPost = async (req, res) => {
 
 export const deletePost = async (req, res) => {
     const { id } = req.params;
-    const clerkUserId = req.auth.userId;
+    const userId = req.user._id;
 
-    if (!clerkUserId) return res.status(401).json({ message: "Not Authenticated!" });
+    if (!userId) return res.status(401).json({ message: "Not Authenticated!" });
 
-    const role = req.auth.sessionClaims?.metadata?.role || "user";
+    const role = req.user.role || "user";
 
     if (role == "admin") {
         await Post.findByIdAndDelete(id);
@@ -144,11 +144,9 @@ export const deletePost = async (req, res) => {
         return res.status(200).json("Post has been deleted");
     }
 
-    const user = await User.findOne({ clerkUserId });
-
     const deletedPost = await Post.findOneAndDelete({
         _id: id,
-        user: user._id,
+        user: userId,
     });
 
     if (!deletedPost) {
@@ -174,11 +172,11 @@ export const uploadAuth = async (req, res) => {
 export const featurePost = async (req, res) => {
     const { id } = req.params;
     const { postId } = req.body;
-    const clerkUserId = req.auth.userId;
+    const userId = req.user._id;
 
-    if (!clerkUserId) return res.status(401).json({ message: "Not Authenticated!" });
+    if (!userId) return res.status(401).json({ message: "Not Authenticated!" });
 
-    const role = req.auth.sessionClaims?.metadata?.role || "user";
+    const role = req.user.role || "user";
 
     if (role !== "admin") {
         await Post.findByIdAndDelete(id);

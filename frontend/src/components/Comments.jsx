@@ -6,14 +6,14 @@ import configuration from '../configuration/config'
 import { useAuth, useUser } from "@clerk/clerk-react"
 import { toast } from 'react-toastify'
 import { useAuthStore } from '../store/useAuthStore'
+import { axiosInstance } from '../lib/axios'
 
 const fetchComments = async (postId) => {
-    const res = await axios.get(`${configuration.apiUrl}/comments/${postId}`);
+    const res = await axiosInstance.get(`/comments/${postId}`);
     return res.data;
 }
 
 const Comments = ({ postId }) => {
-    const { user } = useUser();
     const { authUser } = useAuthStore();
     const { getToken } = useAuth();
     const textareaRef = useRef(null);
@@ -29,11 +29,7 @@ const Comments = ({ postId }) => {
         mutationFn: async (newComment) => {
             const token = await getToken();
             try {
-                const response = await axios.post(`${configuration.apiUrl}/comments/${postId}`, newComment, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                });
+                const response = await axiosInstance.post(`/comments/${postId}`, newComment);
                 return response.data;
             } catch (error) {
                 throw error;
@@ -74,6 +70,7 @@ const Comments = ({ postId }) => {
 
         mutation.mutate(data);
     }
+    
     return (
         <div className='flex flex-col gap-6 lg:w-3/5'>
             <h1 className='text-xl text-gray-500 underline'>Comments</h1>

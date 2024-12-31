@@ -4,9 +4,10 @@ import MainCategories from '../components/MainCategories'
 import FeaturedPosts from '../components/FeaturedPosts'
 import PostList from '../components/PostList'
 import { useAuth } from '@clerk/clerk-react'
+import { useAuthStore } from '../store/useAuthStore'
 
 const HomePage = () => {
-  const { isSignedIn } = useAuth();
+  const {authUser} = useAuthStore();
 
   return (
     <div className='mt-4 flex flex-col gap-4'>
@@ -26,13 +27,13 @@ const HomePage = () => {
         </div>
 
         {/* animated button */}
-        <Link to={`${!isSignedIn ? "/login" : "write"}`} className='hidden md:block relative'>
+        <Link to={`${!authUser ? "/login" : "write"}`} className='hidden md:block relative'>
           <svg
             viewBox="0 0 200 200"
             width="200"
             height="200"
-            // className="text-lg tracking-widest animate-spin animatedButton"
-            className="text-lg tracking-widest"
+            className="text-lg tracking-widest animate-spin animatedButton"
+            // className="text-lg tracking-widest"
           >
             <path
               id="circlePath"
