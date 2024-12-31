@@ -38,8 +38,6 @@ const PostList = () => {
       lastPage.hasMore ? pages.length + 1 : undefined,
   });
 
-  if (status === "loading") return <p>Loading posts...</p>;
-
   if (status === "error") {
     toast.error("An error occurred: " + error.message);
     return <p>An error occurred.</p>;
@@ -49,9 +47,13 @@ const PostList = () => {
 
   return (
     <>
-      {isFetching && allPosts.length === 0 && (
-        <p className="text-center mb-6">Loading posts...</p>
-      )}
+      {
+        isFetching ? (
+          <p className="text-center mb-6">Loading posts...</p>
+        ) : allPosts.length === 0 && (
+          <p className="text-center mb-6">No posts found.</p>
+        )
+      }
       <InfiniteScroll
         dataLength={allPosts.length}
         next={fetchNextPage}

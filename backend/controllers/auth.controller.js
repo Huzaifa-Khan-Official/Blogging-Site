@@ -59,6 +59,66 @@ export const signup = async (req, res) => {
         });
     }
 }
+
+export const googleSignup = async (req, res) => {
+    const { username, email, img, isVerified } = req.body;
+    try {
+
+        if (!username || !email || !img || !isVerified) {
+            return res.status(400).json({
+                message: "Please provide all required fields"
+            })
+        }
+
+        const user = await User.findOne({ email });
+
+        if (user) {
+            generateToken(user._id, res);
+            res.status(201).json({
+                message: "Login Successfully",
+                data: {
+                    id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    img: user.img,
+                    isVerified: user.isVerified,
+                }
+            })
+        }
+
+        const newUser = new User({
+            username,
+            email,
+            img,
+            isVerified
+        });
+
+        if (newUser) {
+            generateToken(newUser._id, res);
+            await newUser.save();
+
+            res.status(201).json({
+                message: "Signup Successfully",
+                data: {
+                    id: newUser._id,
+                    username: newUser.username,
+                    email: newUser.email,
+                    img: newUser.img ? newUser.img : ""
+                }
+            })
+        } else {
+            res.status(400).json({
+                message: "Invalid user data."
+            });
+        }
+    } catch (error) {
+        console.log("Error in signup controller", error.message);
+        res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+}
+
 export const login = async (req, res) => {
     const { email, password } = req.body;
     try {

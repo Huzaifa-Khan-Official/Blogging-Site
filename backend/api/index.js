@@ -1,5 +1,5 @@
 import express from "express";
-import { clerkMiddleware, requireAuth } from "@clerk/express";
+import { clerkMiddleware } from "@clerk/express";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -43,26 +43,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// // for testing purposes
-// app.get("/auth-state", (req, res) => {
-//     const authState = req.auth;
-//     res.json(authState);
-// })   
-
-// first approach
-// app.get("/protect", (req, res) => {
-//     const {userId} = req.auth;
-//     if(!userId) return res.status(401).json({message: "not authenticated"});
-
-//     res.status(200).json({message: "authentication successful"});
-// })
-
-// second approach
-// app.get("/protect2", requireAuth(), (req, res) => {
-//     res.status(200).json({ message: "authentication successful" });
-// })
-
-app.use("/users", userRouter);
+app.use("/users",userRouter);
 app.use("/auth", authRouter);
 app.use("/posts", postRouter);
 app.use("/comments", commentRouter);

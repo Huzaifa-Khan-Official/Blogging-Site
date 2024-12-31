@@ -15,10 +15,16 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        required: true,
+    },
+    isVerified: {
+        type: Boolean,
     },
     img: {
         type: String,
+    },
+    role: {
+        type: String,
+        default: ""
     },
     savedPosts: {
         type: [String],

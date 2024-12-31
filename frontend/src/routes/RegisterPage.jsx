@@ -3,16 +3,14 @@ import { Link, useNavigate } from 'react-router-dom'
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { FaRegEye } from "react-icons/fa6";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import axios from "axios";
 import Image from '../components/Image';
 import app from '../configuration/firebase.config';
-import { toast } from 'react-toastify';
 import { useForm } from "react-hook-form";
 import { useAuthStore } from "../store/useAuthStore"
 
 
 const RegisterPage = () => {
-  const { signup, isSigninpUp } = useAuthStore();
+  const { signup, isSigninpUp, googleSignup } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
@@ -38,8 +36,10 @@ const RegisterPage = () => {
           username: user.displayName,
           email: user.email,
           img: user.photoURL,
+          isVerified: user.emailVerified,
         };
 
+        googleSignup(data);
       }).catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;

@@ -1,14 +1,15 @@
 import User from "../models/user.model.js";
 
 export const getUserSavedPosts = async (req, res) => {
-    const clerkUserId = req.auth.userId;
+    const userId = req.user._id;
 
-    if (!clerkUserId) {
+
+    if (!userId) {
         return res.status(401).json({ message: "Unauthorized" });
     }
 
     try {
-        const user = await User.findOne({ clerkUserId });
+        const user = await User.findById(userId);
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -26,15 +27,15 @@ export const getUserSavedPosts = async (req, res) => {
 };
 
 export const savedPost = async (req, res) => {
-    const clerkUserId = req.auth.userId;
+    const userId = req.user._id;
     const { postId } = req.body;
 
-    if (!clerkUserId) {
+    if (!userId) {
         return res.status(401).json({ message: "Unauthorized" });
     }
 
     try {
-        const user = await User.findOne({ clerkUserId });
+        const user = await User.findById(userId);
 
         const isSaved = user.savedPosts.some((p) => p === postId);
 
@@ -48,10 +49,7 @@ export const savedPost = async (req, res) => {
             });
         }
 
-        setTimeout(() => {
-            return res.status(200).json(isSaved ? "Post unsaved" : "Post saved");
-        }, 3000);
-
+        return res.status(200).json(isSaved ? "Post unsaved" : "Post saved");
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

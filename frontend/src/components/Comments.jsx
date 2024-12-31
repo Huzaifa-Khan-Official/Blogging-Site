@@ -5,6 +5,7 @@ import axios from "axios"
 import configuration from '../configuration/config'
 import { useAuth, useUser } from "@clerk/clerk-react"
 import { toast } from 'react-toastify'
+import { useAuthStore } from '../store/useAuthStore'
 
 const fetchComments = async (postId) => {
     const res = await axios.get(`${configuration.apiUrl}/comments/${postId}`);
@@ -13,6 +14,7 @@ const fetchComments = async (postId) => {
 
 const Comments = ({ postId }) => {
     const { user } = useUser();
+    const { authUser } = useAuthStore();
     const { getToken } = useAuth();
     const textareaRef = useRef(null);
 
@@ -56,6 +58,14 @@ const Comments = ({ postId }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        if (!authUser) {
+            toast.error("You need to be logged in to comment", {
+                autoClose: 1500,
+            });
+            e.target.elements.desc.value = "";
+            return;
+        }
+
         const formData = new FormData(e.target);
 
         const data = {
@@ -88,8 +98,8 @@ const Comments = ({ postId }) => {
                                     desc: `${mutation.variables.desc} (Sending...)`,
                                     createdAt: new Date(),
                                     user: {
-                                        img: user.imageUrl,
-                                        username: user.username
+                                        img: authUser.imageUrl,
+                                        username: authUser.username
                                     }
                                 }}
                             />

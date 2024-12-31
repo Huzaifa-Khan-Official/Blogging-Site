@@ -1,34 +1,33 @@
-import React from 'react'
-import { useAuth, useUser } from "@clerk/clerk-react"
+import React, { useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import configuration from '../configuration/config.js';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../store/useAuthStore.js';
+import { axiosInstance } from '../lib/axios.js';
 
 const PostMenuActions = ({ post }) => {
-  const { user } = useUser();
-  const { getToken } = useAuth();
+  const { authUser } = useAuthStore();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+
+  }, [authUser])
 
   const { isPending, error, data: savedPosts } = useQuery({
     queryKey: ['savedPosts'],
     queryFn: async () => {
-      const token = await getToken();
-      const response = await axios.get(`${configuration.apiUrl}/users/saved`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
+      const response = await axiosInstance.get("/users/saved");
       return response.data;
     },
-    enabled: !!user,
+    enabled: !!authUser,
   });
 
-  const isAdmin = user?.publicMetadata?.role === "admin" || false;
+  const isAdmin = authUser?.role === "admin" || false;
 
-  const isSaved = user ? savedPosts?.some((p) => p === post._id) : false;
+  const isSaved = authUser ? savedPosts?.some((p) => p === post._id) : false;
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
@@ -52,14 +51,7 @@ const PostMenuActions = ({ post }) => {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const token = await getToken();
-      return await axios.patch(`${configuration.apiUrl}/users/save`, {
-        postId: post._id
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
+      return await axiosInstance.put("/users/save", {postId: post._id});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['savedPosts'] });
@@ -100,7 +92,8 @@ const PostMenuActions = ({ post }) => {
   }
 
   const handleSave = () => {
-    if (!user) {
+
+    if (!authUser) {
       return navigate("/login");
     }
     saveMutation.mutate();
@@ -168,7 +161,7 @@ const PostMenuActions = ({ post }) => {
 
 
       {/* Delete Btn */}
-      {user && ((post.user.username === user.username || post.user.username === user.emailAddresses[0].emailAddress) || isAdmin) && (
+      {authUser && ((post.user.username === authUser.username || post.user.username === authUser.email) || isAdmin) && (
         <div className='flex items-center gap-2 py-2 text-sm cursor-pointer' onClick={handleDelete}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
