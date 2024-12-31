@@ -170,7 +170,6 @@ export const uploadAuth = async (req, res) => {
 }
 
 export const featurePost = async (req, res) => {
-    const { id } = req.params;
     const { postId } = req.body;
     const userId = req.user._id;
 
@@ -179,8 +178,6 @@ export const featurePost = async (req, res) => {
     const role = req.user.role || "user";
 
     if (role !== "admin") {
-        await Post.findByIdAndDelete(id);
-
         return res.status(403).json("You can not feature posts!");
     }
 

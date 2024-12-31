@@ -1,9 +1,6 @@
 import React, { useRef } from 'react'
 import Comment from './Comment'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import axios from "axios"
-import configuration from '../configuration/config'
-import { useAuth, useUser } from "@clerk/clerk-react"
 import { toast } from 'react-toastify'
 import { useAuthStore } from '../store/useAuthStore'
 import { axiosInstance } from '../lib/axios'
@@ -15,7 +12,6 @@ const fetchComments = async (postId) => {
 
 const Comments = ({ postId }) => {
     const { authUser } = useAuthStore();
-    const { getToken } = useAuth();
     const textareaRef = useRef(null);
 
     const { isPending, error, data } = useQuery({
@@ -27,7 +23,6 @@ const Comments = ({ postId }) => {
 
     const mutation = useMutation({
         mutationFn: async (newComment) => {
-            const token = await getToken();
             try {
                 const response = await axiosInstance.post(`/comments/${postId}`, newComment);
                 return response.data;

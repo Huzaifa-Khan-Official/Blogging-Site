@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
-import configuration from '../configuration/config.js';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore.js';
@@ -11,10 +9,6 @@ const PostMenuActions = ({ post }) => {
   const { authUser } = useAuthStore();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-
-  }, [authUser])
 
   const { isPending, error, data: savedPosts } = useQuery({
     queryKey: ['savedPosts'],
@@ -31,12 +25,7 @@ const PostMenuActions = ({ post }) => {
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      const token = await getToken();
-      return await axios.delete(`${configuration.apiUrl}/posts/${post._id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
+      return await axiosInstance.delete(`/posts/${post._id}`);
     },
     onSuccess: () => {
       toast.success("Post deleted successfully", {
@@ -51,7 +40,7 @@ const PostMenuActions = ({ post }) => {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      return await axiosInstance.put("/users/save", {postId: post._id});
+      return await axiosInstance.put("/users/save", { postId: post._id });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['savedPosts'] });
@@ -66,14 +55,9 @@ const PostMenuActions = ({ post }) => {
 
   const featureMutation = useMutation({
     mutationFn: async () => {
-      const token = await getToken();
-      return await axios.patch(`${configuration.apiUrl}/posts/feature`, {
+      return await axiosInstance.put(`/posts/feature`, {
         postId: post._id
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
+      },);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['post', post.slug] });

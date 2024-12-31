@@ -1,5 +1,4 @@
 import express from "express";
-import { clerkMiddleware } from "@clerk/express";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -9,16 +8,12 @@ import userRouter from "../routes/user.route.js";
 import postRouter from "../routes/post.route.js";
 import authRouter from "../routes/auth.route.js";
 import commentRouter from "../routes/comment.route.js";
-import webHookRouter from "../routes/webhook.route.js";
 import connectDB from "../lib/connectDB.js";
 import serverConfig from "../Configurations/server.config.js";
 
 const app = express();
 dotenv.config();
 const port = serverConfig.port || 3000;
-
-app.use(clerkMiddleware());
-app.use("/webhooks", webHookRouter);
 
 app.use(express.json());
 app.use(cookieParser());

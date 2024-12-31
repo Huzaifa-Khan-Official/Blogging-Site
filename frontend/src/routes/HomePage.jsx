@@ -3,11 +3,10 @@ import { Link } from 'react-router-dom'
 import MainCategories from '../components/MainCategories'
 import FeaturedPosts from '../components/FeaturedPosts'
 import PostList from '../components/PostList'
-import { useAuth } from '@clerk/clerk-react'
 import { useAuthStore } from '../store/useAuthStore'
 
 const HomePage = () => {
-  const {authUser} = useAuthStore();
+  const { authUser } = useAuthStore();
 
   return (
     <div className='mt-4 flex flex-col gap-4'>
@@ -33,7 +32,6 @@ const HomePage = () => {
             width="200"
             height="200"
             className="text-lg tracking-widest animate-spin animatedButton"
-            // className="text-lg tracking-widest"
           >
             <path
               id="circlePath"
@@ -71,7 +69,10 @@ const HomePage = () => {
       <MainCategories />
 
       {/* featured posts */}
-      <FeaturedPosts />
+      <div className=''>
+        <h1 className="mt-3 text-2xl text-gray-600">Feature Posts</h1>
+        <FeaturedPosts />
+      </div>
 
       {/* post list */}
       <div className=''>

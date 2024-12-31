@@ -5,9 +5,10 @@ import axios from 'axios';
 import configuration from '../configuration/config';
 import { useQuery } from '@tanstack/react-query';
 import { format } from "timeago.js"
+import { axiosInstance } from '../lib/axios';
 
 const fetchPost = async () => {
-  const response = await axios.get(`${configuration.apiUrl}/posts?featured=true&limit=4&sort=newest`);
+  const response = await axiosInstance.get("/posts?featured=true&limit=4&sort=newest");
   return response.data;
 }
 
@@ -23,10 +24,14 @@ const FeaturedPosts = () => {
 
   const posts = data.posts;
 
-  if (!posts || posts.length === 0) return;
+  if (!posts || posts.length === 0) return (
+    <div className=''>
+      No Featured Posts found
+    </div>
+  );
 
   return (
-    <div className='mt-8 flex flex-col md:flex-row gap-8 py-10'>
+    <div className='flex flex-col md:flex-row gap-8 py-5'>
       {/* First */}
       <div className='w-full flex md:w-1/2 flex-col gap-3'>
         {/* image */}

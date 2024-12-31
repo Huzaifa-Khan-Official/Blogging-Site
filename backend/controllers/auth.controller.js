@@ -31,7 +31,8 @@ export const signup = async (req, res) => {
         const newUser = new User({
             username,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            role: "",
         });
 
         if (newUser) {
@@ -44,6 +45,7 @@ export const signup = async (req, res) => {
                     id: newUser._id,
                     username: newUser.username,
                     email: newUser.email,
+                    role: user.role,
                     img: newUser.img ? newUser.img : ""
                 }
             })
@@ -103,6 +105,7 @@ export const googleSignup = async (req, res) => {
                     id: newUser._id,
                     username: newUser.username,
                     email: newUser.email,
+                    role: user.role,
                     img: newUser.img ? newUser.img : ""
                 }
             })
@@ -138,9 +141,7 @@ export const login = async (req, res) => {
                 message: "Invalid credentials"
             })
         }
-
-        console.log("all ok");
-
+        
         generateToken(user._id, res);
 
         return res.json({
@@ -149,6 +150,7 @@ export const login = async (req, res) => {
                 _id: user._id,
                 username: user.username,
                 email: user.email,
+                role: user.role,
                 img: user.img ? user.img : "F",
             },
         })

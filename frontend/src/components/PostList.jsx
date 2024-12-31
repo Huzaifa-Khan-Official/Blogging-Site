@@ -6,11 +6,12 @@ import configuration from "../configuration/config";
 import { toast } from "react-toastify";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSearchParams } from "react-router-dom";
+import { axiosInstance } from "../lib/axios";
 
 const fetchPosts = async (pageParam, searchParams) => {
   const searchParamsObj = Object.fromEntries([...searchParams]);
 
-  const res = await axios.get(`${configuration.apiUrl}/posts`, {
+  const res = await axiosInstance.get("/posts", {
     params: {
       page: pageParam,
       limit: 5,
@@ -42,9 +43,9 @@ const PostList = () => {
     toast.error("An error occurred: " + error.message);
     return <p>An error occurred.</p>;
   }
-
+  
   const allPosts = data?.pages?.flatMap((page) => page.posts) || [];
-
+  
   return (
     <>
       {

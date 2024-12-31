@@ -1,18 +1,13 @@
-import { useAuth, useUser } from '@clerk/clerk-react'
 import "react-quill-new/dist/quill.snow.css";
 import React, { useEffect, useState } from 'react'
 import ReactQuill from 'react-quill-new';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import configuration from '../configuration/config';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Upload from '../components/Upload';
 import { axiosInstance } from '../lib/axios';
 
 const Write = () => {
-
-  const { getToken } = useAuth();
   const [value, setValue] = useState('');
   const navigate = useNavigate();
   const [cover, setCover] = useState('');

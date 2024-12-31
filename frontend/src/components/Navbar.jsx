@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { ImCross } from 'react-icons/im';
 import { Link } from 'react-router-dom';
-import { SignedIn, SignedOut, useAuth, UserButton } from '@clerk/clerk-react';
 import Image from './Image';
 import { useAuthStore } from '../store/useAuthStore';
 
 const Navbar = () => {
     const { authUser, logout } = useAuthStore();
     const [open, setOpen] = useState(false);
-    const { isSignedIn } = useAuth();
 
     const navLinks = [
         { to: "/", label: "Home" },
