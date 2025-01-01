@@ -35,7 +35,6 @@ const RegisterPage = () => {
         const data = {
           username: user.displayName,
           email: user.email,
-          img: user.photoURL,
           isVerified: user.emailVerified,
         };
 

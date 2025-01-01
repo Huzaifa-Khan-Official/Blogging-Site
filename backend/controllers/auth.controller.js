@@ -32,7 +32,6 @@ export const signup = async (req, res) => {
             username,
             email,
             password: hashedPassword,
-            role: "",
         });
 
         if (newUser) {
@@ -45,8 +44,8 @@ export const signup = async (req, res) => {
                     id: newUser._id,
                     username: newUser.username,
                     email: newUser.email,
-                    role: user.role,
-                    img: newUser.img ? newUser.img : ""
+                    role: "",
+                    img: "",
                 }
             })
         } else {
@@ -63,10 +62,10 @@ export const signup = async (req, res) => {
 }
 
 export const googleSignup = async (req, res) => {
-    const { username, email, img, isVerified } = req.body;
+    const { username, email, isVerified } = req.body;
     try {
 
-        if (!username || !email || !img || !isVerified) {
+        if (!username || !email || !isVerified) {
             return res.status(400).json({
                 message: "Please provide all required fields"
             })
@@ -84,6 +83,7 @@ export const googleSignup = async (req, res) => {
                     email: user.email,
                     img: user.img,
                     isVerified: user.isVerified,
+                    role: user.role
                 }
             })
         }
@@ -91,7 +91,6 @@ export const googleSignup = async (req, res) => {
         const newUser = new User({
             username,
             email,
-            img,
             isVerified
         });
 
@@ -106,7 +105,7 @@ export const googleSignup = async (req, res) => {
                     username: newUser.username,
                     email: newUser.email,
                     role: user.role,
-                    img: newUser.img ? newUser.img : ""
+                    img: user.img,
                 }
             })
         } else {
@@ -141,7 +140,7 @@ export const login = async (req, res) => {
                 message: "Invalid credentials"
             })
         }
-        
+
         generateToken(user._id, res);
 
         return res.json({

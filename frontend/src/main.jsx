@@ -9,21 +9,12 @@ import LoginPage from './routes/LoginPage.jsx'
 import RegisterPage from './routes/RegisterPage.jsx'
 import SinglePostPage from './routes/SinglePostPage.jsx'
 import MainLayout from './layouts/MainLayout.jsx'
-import configuration from './configuration/config.js'
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from 'react-toastify';
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 
 const queryClient = new QueryClient();
-
-// Import your Publishable Key
-const PUBLISHABLE_KEY = configuration.clerkPublishableKey;
-
-
-if (!PUBLISHABLE_KEY) {
-  throw new Error("Missing Publishable Key")
-}
 
 const router = createBrowserRouter([
   {
