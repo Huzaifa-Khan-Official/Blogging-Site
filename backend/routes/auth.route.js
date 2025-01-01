@@ -10,7 +10,7 @@ router.post("/google-signup", googleSignup);
 
 router.post("/login", login);
 
-router.put("/update-profile", protectRoute, updateProfile)
+router.put("/updateProfile", protectRoute, updateProfile);
 
 router.post("/logout", logout);
 

@@ -158,7 +158,7 @@ export const deletePost = async (req, res) => {
     res.status(200).json("Post has been deleted");
 }
 
-const imagekit = new ImageKit({
+export const imagekit = new ImageKit({
     urlEndpoint: serverConfig.image_kit_url_endpoint,
     publicKey: serverConfig.image_kit_public_key,
     privateKey: serverConfig.image_kit_private_key,

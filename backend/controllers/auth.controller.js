@@ -2,6 +2,7 @@ import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";
+import { imagekit } from "./post.controller.js";
 
 export const signup = async (req, res) => {
     const { username, email, password } = req.body;
@@ -150,7 +151,7 @@ export const login = async (req, res) => {
                 username: user.username,
                 email: user.email,
                 role: user.role,
-                img: user.img ? user.img : "F",
+                img: user.img ? user.img : "",
             },
         })
     } catch (error) {
@@ -177,19 +178,26 @@ export const logout = (req, res) => {
 
 export const updateProfile = async (req, res) => {
     try {
-        const { profilePic } = req.body;
+        const { username, img } = req.body;
+
         const userId = req.user._id;
 
-        if (!profilePic) {
-            return res.status(400).json({
-                message: "Profile pic is required",
+        let imageUploadUrl = null;
+
+        if (img) {
+            const uploadResponse = await imagekit.upload({
+                file: img,
+                fileName: `user-profile-${user.username}-${userId}`,
+                folder: "/user-profiles/",
             });
+
+            imageUploadUrl = uploadResponse.url;
         }
 
-        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { profilePic: uploadResponse.secure_url },
+            { img: imageUploadUrl, username: username ? username : req.user.username },
             { new: true }
         );
 

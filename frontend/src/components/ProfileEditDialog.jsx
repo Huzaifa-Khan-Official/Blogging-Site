@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaCamera, FaRegPenToSquare } from "react-icons/fa6";
 import { IoCamera } from "react-icons/io5";
 import Image from './Image';
 import { useAuthStore } from '../store/useAuthStore';
 
 export function ProfileEditDialog({ isOpen, onClose, user }) {
-    const { updateProfile, isUpdatingProfile } = useAuthStore();
+    const { updateProfile, isUpdatingProfile, authUser } = useAuthStore();
     const [selectedImg, setSelectedImg] = useState(null);
-    if (!isOpen) return null;
+    const [isEditing, setIsEditing] = useState(false);
+    const [username, setUsername] = useState(null);
 
+    useEffect(() => {
+        setUsername(authUser?.username)
+    }, [authUser])
+
+    if (!isOpen) return null;
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
@@ -24,6 +30,40 @@ export function ProfileEditDialog({ isOpen, onClose, user }) {
             setSelectedImg(base64Image);
             // await updateProfile({ profilePic: base64Image });
         };
+    };
+
+
+    const handleIconClick = () => {
+        setIsEditing(true);
+    };
+
+    const handleInputChange = (e) => {
+        setUsername(e.target.value);
+    };
+
+    const handleInputBlur = () => {
+        setIsEditing(false);
+    };
+
+    const handleInputKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            setIsEditing(false);
+        }
+    };
+
+    const handleUpdateProfile = async () => {
+        if (!(authUser.username === username)) {
+            await updateProfile({ username });
+            onClose();
+        } else if (selectedImg) {
+            await updateProfile({ img: selectedImg });
+            onClose();
+        } else if (selectedImg && username) {
+            await updateProfile({ img: selectedImg, username });
+            onClose();
+        } else {
+            onClose();
+        }
     };
 
     return (
@@ -70,9 +110,24 @@ export function ProfileEditDialog({ isOpen, onClose, user }) {
                                     />
                                 </label>
                             </div>
-                            <div className='flex items-center gap-2'>
-                                <h3 className="text-lg font-semibold">{user.username}</h3>
-                                <FaRegPenToSquare className="w-4 h-4 mr-2 cursor-pointer" />
+                            <div className='flex items-center gap-2 flex-wrap'>
+                                {/* <h3 className="text-lg font-semibold">{user.username}</h3> */}
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        value={username}
+                                        onChange={handleInputChange}
+                                        onBlur={handleInputBlur}
+                                        onKeyDown={handleInputKeyPress}
+                                        className="font-semibold border border-gray-300 rounded px-2 py-1 w-full"
+                                        autoFocus
+                                    />
+                                ) : (
+                                    <h3 className="text-lg font-semibold">
+                                        {username}
+                                    </h3>
+                                )}
+                                <FaRegPenToSquare className="w-4 h-4 mr-2 cursor-pointer" onClick={handleIconClick} />
                             </div>
                         </div>
 
@@ -131,8 +186,10 @@ export function ProfileEditDialog({ isOpen, onClose, user }) {
                     </div>
 
                     <div className='flex justify-end'>
-                        <button className="px-4 py-2 border border-gray-400 rounded-md hover:bg-gray-100">
-                            Edit profile
+                        <button className="px-4 py-2 border border-gray-400 rounded-md hover:bg-gray-100" onClick={handleUpdateProfile}>
+                            {
+                                isUpdatingProfile ? "Updating..." : "Save changes"
+                            }
                         </button>
                     </div>
                 </div>
