@@ -9,9 +9,6 @@ const serverConfig = {
     image_kit_public_key: process.env.IK_PUBLIC_KEY,
     image_kit_private_key: process.env.IK_PRIVATE_KEY,
     jwt_secret_key: process.env.JWT_SECRET_KEY,
-    cloudinary_cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    cloudinary_api_key: process.env.CLOUDINARY_API_KEY,
-    cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET
 }
 
 export default serverConfig;
