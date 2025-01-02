@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from './Image';
+import { Link } from 'react-router-dom';
 
 export function ProfilePreviewDialog({ isOpen, onClose, user, onUpdateProfile, onLogout }) {
   if (!isOpen) return null;
@@ -10,7 +11,7 @@ export function ProfilePreviewDialog({ isOpen, onClose, user, onUpdateProfile, o
         <div className="flex flex-col items-center gap-4 p-2">
           <div className="w-20 h-20 rounded-full overflow-hidden">
             <Image
-              src={user?.img || "user.png"} 
+              src={user?.img || "user.png"}
               alt={user?.username}
               className="w-full h-full object-cover"
             />
@@ -22,10 +23,17 @@ export function ProfilePreviewDialog({ isOpen, onClose, user, onUpdateProfile, o
           <div className="flex flex-col w-full gap-2">
             <button
               onClick={onUpdateProfile}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors cursor-pointer"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-300 transition-colors cursor-pointer"
             >
               Update Profile
             </button>
+            <Link
+              to="/my-posts"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-300 transition-colors cursor-pointer text-center"
+              onClick={onClose}
+            >
+              My Posts
+            </Link>
             <button
               onClick={onLogout}
               className="w-full px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"

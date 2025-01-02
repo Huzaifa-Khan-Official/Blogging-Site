@@ -4,9 +4,8 @@ import PostListItem from "../components/PostListItem";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { toast } from "react-toastify";
 
-
 const fetchPosts = async (pageParam) => {
-    const res = await axiosInstance.get("/users/saved", {
+    const res = await axiosInstance.get("/users/my-posts", {
         params: {
             page: pageParam,
             limit: 5,
@@ -15,7 +14,7 @@ const fetchPosts = async (pageParam) => {
     return res.data;
 };
 
-const SavedPostsPage = () => {
+const MyPostsPage = () => {
     const {
         data,
         error,
@@ -40,7 +39,7 @@ const SavedPostsPage = () => {
 
     return (
         <div>
-            <h1 className='mt-5 mb-8 text-2xl'>Saved Blog's</h1>
+            <h1 className='mt-5 mb-8 text-2xl'>My Blog's</h1>
 
             {
                 isFetching ? (
@@ -74,4 +73,4 @@ const SavedPostsPage = () => {
     )
 }
 
-export default SavedPostsPage
+export default MyPostsPage

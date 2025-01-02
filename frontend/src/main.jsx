@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from 'react-toastify';
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import SavedPostsPage from './routes/SavedPostsPage.jsx'
+import MyPostsPage from './routes/MyPostsPage.jsx'
 
 const queryClient = new QueryClient();
 
@@ -31,7 +32,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/saved-posts",
-        element: <SavedPostsPage />
+        element: (
+          <ProtectedRoute>
+            <SavedPostsPage />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "/my-posts",
+        element: (
+          <ProtectedRoute>
+            <MyPostsPage />
+          </ProtectedRoute>
+        )
       },
       {
         path: "/:slug",

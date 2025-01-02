@@ -39,7 +39,7 @@ const Navbar = () => {
 
                     <div className={`w-full flex-col gap-2 text-lg font-medium px-4 z-10 absolute top-16 left-0 bg-[#e6e6ff] shadow-2xl ${open ? "flex" : "hidden"} border-t-gray-700 border-t-2 py-3`}>
                         {navLinks.map((link, index) => (
-                            <div key={index} className="m-16 relative group">
+                            <div key={index} className="relative group">
                                 <Link to={link.to} className="inline-block relative group-hover:text-blue-900">
                                     {link.label}
                                     <span className="absolute -bottom-1 left-1/2 w-0 h-[2px] bg-blue-800 transition-all duration-500 group-hover:w-full group-hover:left-0"></span>

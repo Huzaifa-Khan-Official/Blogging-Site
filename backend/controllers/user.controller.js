@@ -2,32 +2,52 @@ import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 
 export const getUserSavedPosts = async (req, res) => {
-    const userId = req.user._id;
+    const user = req.user;
+    const userId = user._id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
 
-
-    if (!userId) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
 
     try {
-        const user = await User.findById(userId);
-
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
         if (!user?.savedPosts) {
             return res.status(200).json([]);
         }
 
-        const savedPosts = await Post.find({ _id: { $in: user.savedPosts } }).populate("user", "username");
+        const posts = await Post.find({ _id: { $in: user.savedPosts } })
+            .populate("user", "username")
+            .limit(limit)
+            .skip((page - 1) * limit);
 
-        return res.status(200).json(savedPosts);
+        const totalPosts = await Post.countDocuments({ _id: { $in: user.savedPosts } });
+        const hasMore = page * limit < totalPosts;
+
+        res.status(200).json({ posts, hasMore });
     } catch (error) {
         console.log("error ==>", error.message);
         return res.status(500).json({ message: error.message });
     }
 };
+
+export const getUserPosts = async (req, res) => {
+    const userId = req.user._id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+
+    try {
+        const posts = await Post.find({ user: userId })
+            .populate("user", "username")
+            .limit(limit)
+            .skip((page - 1) * limit);
+
+
+        const totalPosts = await Post.countDocuments({ user: userId });
+        const hasMore = page * limit < totalPosts;
+
+        res.status(200).json({ posts, hasMore });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
 
 export const savedPost = async (req, res) => {
     const userId = req.user._id;
