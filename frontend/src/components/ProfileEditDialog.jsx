@@ -3,10 +3,12 @@ import { FaCamera, FaRegPenToSquare } from "react-icons/fa6";
 import { IoCamera } from "react-icons/io5";
 import Image from './Image';
 import { useAuthStore } from '../store/useAuthStore';
+import Upload from './Upload';
 
 export function ProfileEditDialog({ isOpen, onClose, user }) {
     const { updateProfile, isUpdatingProfile, authUser } = useAuthStore();
     const [selectedImg, setSelectedImg] = useState(null);
+    const [progress, setProgress] = useState(0);
     const [isEditing, setIsEditing] = useState(false);
     const [username, setUsername] = useState(null);
 
@@ -52,18 +54,20 @@ export function ProfileEditDialog({ isOpen, onClose, user }) {
     };
 
     const handleUpdateProfile = async () => {
-        if (!(authUser.username === username)) {
-            await updateProfile({ username });
-            onClose();
-        } else if (selectedImg) {
-            await updateProfile({ img: selectedImg });
-            onClose();
-        } else if (selectedImg && username) {
-            await updateProfile({ img: selectedImg, username });
-            onClose();
-        } else {
-            onClose();
-        }
+        // if (!(authUser.username === username)) {
+        //     await updateProfile({ username });
+        //     onClose();
+        // } else if (selectedImg) {
+        //     await updateProfile({ img: selectedImg });
+        //     onClose();
+        // } else if (selectedImg && username) {
+        //     await updateProfile({ img: selectedImg, username });
+        //     onClose();
+        // } else {
+        //     onClose();
+        // }
+        await updateProfile({ img: selectedImg.filePath, username });
+        onClose();
     };
 
     return (
@@ -83,7 +87,7 @@ export function ProfileEditDialog({ isOpen, onClose, user }) {
                             <div className='relative'>
                                 <div className="w-20 h-20 rounded-full overflow-hidden relative">
                                     {selectedImg ? (<img
-                                        src={selectedImg}
+                                        src={selectedImg.url}
                                         alt="Profile"
                                         className="w-full h-full rounded-full object-cover border-4 "
                                     />) : (
@@ -98,16 +102,19 @@ export function ProfileEditDialog({ isOpen, onClose, user }) {
                                     htmlFor="avatar-upload"
                                     className={`absolute bottom-0 right-0 bg-base-content hover:scale-105 p-2 rounded-full cursor-pointer transition-all duration-200 ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""}`}
                                 >
-                                    <IoCamera className='absolute right-0 z-20 -bottom-2 bg-gray-400 p-2 w-10 h-10 rounded-full' />
 
-                                    <input
+                                    {/* <input
                                         type="file"
                                         id="avatar-upload"
                                         className="hidden"
                                         accept="image/*"
                                         onChange={handleImageUpload}
                                         disabled={isUpdatingProfile}
-                                    />
+                                        /> */}
+                                    <Upload type="image" setProgress={setProgress} setData={setSelectedImg}>
+                                        <IoCamera className='absolute right-0 z-20 -bottom-2 bg-gray-400 p-2 w-10 h-10 rounded-full' />
+                                        {/* <button className='w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white '>Add a cover image</button> */}
+                                    </Upload>
                                 </label>
                             </div>
                             <div className='flex items-center gap-2 flex-wrap'>
@@ -130,8 +137,9 @@ export function ProfileEditDialog({ isOpen, onClose, user }) {
                                 <FaRegPenToSquare className="w-4 h-4 mr-2 cursor-pointer" onClick={handleIconClick} />
                             </div>
                         </div>
-
                     </div>
+                    {(progress > 0 && progress < 100) && (<p>{`Uploading: ${progress}`}</p>)}
+                    {/* <p>{`Uploading: ${progress}`}</p> */}
 
                     {/* Email Addresses Section */}
                     <div className="space-y-4">

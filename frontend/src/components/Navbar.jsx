@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { ImCross } from 'react-icons/im';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,7 @@ import Image from './Image';
 import { useAuthStore } from '../store/useAuthStore';
 import { ProfilePreviewDialog } from './ProfilePreviewDialog';
 import { ProfileEditDialog } from './ProfileEditDialog';
+import UserImage from './userImage';
 
 const Navbar = () => {
     const { authUser, logout } = useAuthStore();
@@ -49,7 +50,7 @@ const Navbar = () => {
                             </Link>
                         ) : (
                             <div onClick={() => setProfileOpen(true)} className='cursor-pointer'>
-                                <Image src={authUser.img || "user.png"} alt="profile" w={36} h={36} />
+                                <UserImage />
                             </div>
                         )}
                     </div>
@@ -68,7 +69,7 @@ const Navbar = () => {
                         </Link>
                     ) : (
                         <div onClick={() => setProfileOpen(true)} className='cursor-pointer'>
-                            <Image src={authUser.img || "user.png"} alt="profile" w={36} h={36} />
+                            <UserImage />
                         </div>
                     )}
                 </div>

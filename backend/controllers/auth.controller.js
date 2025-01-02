@@ -182,26 +182,19 @@ export const updateProfile = async (req, res) => {
 
         const userId = req.user._id;
 
-        let imageUploadUrl = null;
-
-        if (img) {
-            const uploadResponse = await imagekit.upload({
-                file: img,
-                fileName: `user-profile-${user.username}-${userId}`,
-                folder: "/user-profiles/",
-            });
-
-            imageUploadUrl = uploadResponse.url;
-        }
-
-
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { img: imageUploadUrl, username: username ? username : req.user.username },
+            { img, username },
             { new: true }
         );
 
-        res.status(200).json(updatedUser);
+        res.status(200).json({
+            _id: updatedUser._id,
+            username: updatedUser.username,
+            email: updatedUser.email,
+            role: updatedUser.role,
+            img: updatedUser.img,
+        });
     } catch (error) {
         console.log("Error in update profile controller", error.message);
         res.status(500).json({
