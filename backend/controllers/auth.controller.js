@@ -178,13 +178,13 @@ export const logout = (req, res) => {
 
 export const updateProfile = async (req, res) => {
     try {
-        const { username, img } = req.body;
+        const { username, img, title } = req.body;
 
         const userId = req.user._id;
 
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { img, username },
+            { img, username, title },
             { new: true }
         );
 
@@ -194,6 +194,7 @@ export const updateProfile = async (req, res) => {
             email: updatedUser.email,
             role: updatedUser.role,
             img: updatedUser.img,
+            title: updatedUser.title,
         });
     } catch (error) {
         console.log("Error in update profile controller", error.message);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaCamera, FaRegPenToSquare } from "react-icons/fa6";
+import { FaRegPenToSquare } from "react-icons/fa6";
 import { IoCamera } from "react-icons/io5";
 import Image from './Image';
 import { useAuthStore } from '../store/useAuthStore';
@@ -10,30 +10,16 @@ export function ProfileEditDialog({ isOpen, onClose, user }) {
     const [selectedImg, setSelectedImg] = useState(null);
     const [progress, setProgress] = useState(0);
     const [isEditing, setIsEditing] = useState(false);
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [username, setUsername] = useState(null);
+    const [title, setTitle] = useState(null);
 
     useEffect(() => {
-        setUsername(authUser?.username)
+        setUsername(authUser?.username);
+        setTitle(authUser?.title);
     }, [authUser])
 
     if (!isOpen) return null;
-
-    const handleImageUpload = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-
-        reader.readAsDataURL(file);
-
-        reader.onload = async () => {
-            const base64Image = reader.result;
-
-            setSelectedImg(base64Image);
-            // await updateProfile({ profilePic: base64Image });
-        };
-    };
-
 
     const handleIconClick = () => {
         setIsEditing(true);
@@ -54,19 +40,7 @@ export function ProfileEditDialog({ isOpen, onClose, user }) {
     };
 
     const handleUpdateProfile = async () => {
-        // if (!(authUser.username === username)) {
-        //     await updateProfile({ username });
-        //     onClose();
-        // } else if (selectedImg) {
-        //     await updateProfile({ img: selectedImg });
-        //     onClose();
-        // } else if (selectedImg && username) {
-        //     await updateProfile({ img: selectedImg, username });
-        //     onClose();
-        // } else {
-        //     onClose();
-        // }
-        await updateProfile({ img: selectedImg.filePath, username });
+        await updateProfile({ img: selectedImg?.filePath, username, title });
         onClose();
     };
 
@@ -102,23 +76,12 @@ export function ProfileEditDialog({ isOpen, onClose, user }) {
                                     htmlFor="avatar-upload"
                                     className={`absolute bottom-0 right-0 bg-base-content hover:scale-105 p-2 rounded-full cursor-pointer transition-all duration-200 ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""}`}
                                 >
-
-                                    {/* <input
-                                        type="file"
-                                        id="avatar-upload"
-                                        className="hidden"
-                                        accept="image/*"
-                                        onChange={handleImageUpload}
-                                        disabled={isUpdatingProfile}
-                                        /> */}
                                     <Upload type="image" setProgress={setProgress} setData={setSelectedImg}>
                                         <IoCamera className='absolute right-0 z-20 -bottom-2 bg-gray-400 p-2 w-10 h-10 rounded-full' />
-                                        {/* <button className='w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white '>Add a cover image</button> */}
                                     </Upload>
                                 </label>
                             </div>
                             <div className='flex items-center gap-2 flex-wrap'>
-                                {/* <h3 className="text-lg font-semibold">{user.username}</h3> */}
                                 {isEditing ? (
                                     <input
                                         type="text"
@@ -139,7 +102,6 @@ export function ProfileEditDialog({ isOpen, onClose, user }) {
                         </div>
                     </div>
                     {(progress > 0 && progress < 100) && (<p>{`Uploading: ${progress}`}</p>)}
-                    {/* <p>{`Uploading: ${progress}`}</p> */}
 
                     {/* Email Addresses Section */}
                     <div className="space-y-4">
@@ -156,26 +118,39 @@ export function ProfileEditDialog({ isOpen, onClose, user }) {
                         </div>
                     </div>
 
-                    {/* Phone Number Section */}
+                    {/* Title Section */}
                     <div className="space-y-4">
-                        <h4 className="text-lg font-semibold">Phone number</h4>
+                        <h4 className="text-lg font-semibold">Title</h4>
                         <div className="space-y-2">
-                            {user.phoneNumber && (
-                                <div className="flex items-center justify-between">
+                            {isEditingTitle ? (
+                                <input
+                                    type="text"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    onBlur={() => setIsEditingTitle(false)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            setIsEditingTitle(false);
+                                        }
+                                    }}
+                                    className="border border-gray-300 rounded px-2 py-1 w-full"
+                                    autoFocus
+                                />
+                            ) : (
+                                <div className="flex items-center gap-3">
                                     <div>
-                                        <p className="text-sm">{user.phoneNumber}</p>
-                                        <span className="inline-block mt-1 px-2 py-1 text-xs bg-gray-100 rounded-full">
-                                            Primary
-                                        </span>
+                                        <p className="text-sm">{title || "Enter Your Title"}</p>
                                     </div>
+                                    <FaRegPenToSquare
+                                        className="w-4 h-4 cursor-pointer text-gray-500 hover:text-gray-700"
+                                        onClick={() => setIsEditingTitle(true)}
+                                    />
                                 </div>
                             )}
-                            <button className="flex items-center text-sm px-3 py-1.5 border border-gray-300 rounded-md hover:bg-gray-50">
-                                <FaRegPenToSquare className="w-4 h-4 mr-2" />
-                                Add phone number
-                            </button>
                         </div>
                     </div>
+
+
 
                     {/* Connected Accounts Section */}
                     <div className="space-y-4">
