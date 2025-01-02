@@ -1,3 +1,4 @@
+import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 
 export const getUserSavedPosts = async (req, res) => {
@@ -19,7 +20,9 @@ export const getUserSavedPosts = async (req, res) => {
             return res.status(200).json([]);
         }
 
-        return res.status(200).json(user?.savedPosts);
+        const savedPosts = await Post.find({ _id: { $in: user.savedPosts } }).populate("user", "username");
+
+        return res.status(200).json(savedPosts);
     } catch (error) {
         console.log("error ==>", error.message);
         return res.status(500).json({ message: error.message });

@@ -21,7 +21,7 @@ const PostMenuActions = ({ post }) => {
 
   const isAdmin = authUser?.role === "admin" || false;
 
-  const isSaved = authUser ? savedPosts?.some((p) => p === post._id) : false;
+  const isSaved = authUser ? savedPosts?.some((p) => p._id === post._id) : false;
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
