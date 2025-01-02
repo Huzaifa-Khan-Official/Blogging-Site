@@ -55,7 +55,6 @@ const MyPostsPage = () => {
                     dataLength={allPosts.length}
                     next={fetchNextPage}
                     hasMore={!!hasNextPage}
-                    loader={<h4>Loading more posts...</h4>}
                     endMessage={
                         allPosts.length > 0 && (
                             <p className="text-center mb-6">

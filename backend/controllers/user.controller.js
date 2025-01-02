@@ -72,7 +72,7 @@ export const savedPost = async (req, res) => {
             });
         }
 
-        return res.status(200).json(isSaved ? "Post unsaved" : "Post saved");
+        return res.status(200).json(isSaved);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
