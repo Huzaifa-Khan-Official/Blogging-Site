@@ -38,7 +38,11 @@ const Upload = ({ children, type, setProgress, setData }) => {
     };
 
     const onUploadProgress = (progress) => {
-        setProgress(Math.round((progress.loaded / progress.total) * 100));
+        const percentComplete = Math.round((progress.loaded / progress.total) * 100);
+        setProgress(percentComplete);
+        if (percentComplete === 100) {
+            toast.info('Finalizing upload...');
+        }
     }
     return (
         <IKContext
@@ -55,10 +59,10 @@ const Upload = ({ children, type, setProgress, setData }) => {
                 ref={ref}
                 accept={`${type}/*`}
             />
-            <div className='cursor-pointer' onClick={() => ref.current.click()}>
+            <div className='cursor-pointer' onClick={(e) => ref.current.click()}>
                 {children}
             </div>
-        </IKContext>
+        </IKContext >
     )
 }
 

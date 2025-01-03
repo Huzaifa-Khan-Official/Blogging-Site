@@ -1,15 +1,30 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import { toast } from "react-toastify";
-import { useQueryClient } from "@tanstack/react-query";
 
 export const usePostStore = create((set) => {
-  // const queryClient = useQueryClient();
-
   return {
+    isMutating: false,
     isSaveMutating: false,
     isFeatureMutating: false,
     isDeleteMutating: false,
+
+    createPost: async (newPost, queryClient, onSuccess) => {
+      try {
+        set({ isMutating: true });
+        const response = await axiosInstance.post('/posts', newPost);
+
+        queryClient.invalidateQueries(['posts']);
+        toast.success('Post created successfully!', {
+          autoClose: 1000,
+          onClose: () => onSuccess(response.data.slug)
+        });
+      } catch (error) {
+        toast.error(error.response.data.message);
+      } finally {
+        set({ isMutating: false });
+      }
+    },
 
     deletePost: async (postId, onSuccess) => {
       set({ isDeleteMutating: true });

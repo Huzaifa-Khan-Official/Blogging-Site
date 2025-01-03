@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { ImCross } from 'react-icons/im';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Image from './Image';
 import { useAuthStore } from '../store/useAuthStore';
 import { ProfilePreviewDialog } from './ProfilePreviewDialog';
@@ -12,6 +12,11 @@ const Navbar = () => {
     const [open, setOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
     const [editProfileOpen, setEditProfileOpen] = useState(false);
+    const location = useLocation();
+
+    useEffect(() => {
+        setOpen(false);
+    }, [location])
 
     const navLinks = [
         { to: "/", label: "Home" },

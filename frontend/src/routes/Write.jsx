@@ -1,19 +1,20 @@
 import "react-quill-new/dist/quill.snow.css";
 import React, { useEffect, useState } from 'react'
 import ReactQuill from 'react-quill-new';
-import { useMutation } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import Upload from '../components/Upload';
-import { axiosInstance } from '../lib/axios';
+import { usePostStore } from "../store/usePostStore";
 
 const Write = () => {
   const [value, setValue] = useState('');
-  const navigate = useNavigate();
   const [cover, setCover] = useState('');
   const [img, setImg] = useState('');
   const [video, setVideo] = useState('');
   const [progress, setProgress] = useState(0);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { isMutating, createPost } = usePostStore();
 
   useEffect(() => {
     img && setValue(prev => prev + `<p><img src=${img.url} /></p>`)
@@ -23,25 +24,12 @@ const Write = () => {
     video && setValue(prev => prev + `<p><iframe class="ql-video" src=${video.url} /></p>`)
   }, [video])
 
-  const mutation = useMutation({
-    mutationFn: async (newPost) => {
-      try {
-        const response = await axiosInstance.post("/posts", newPost);
-        return response.data;
-      } catch (error) {
-        throw error;
-      }
-    },
-    onSuccess: (res) => {
-      toast.success('Post created successfully!', {
-        autoClose: 1000,
-        onClose: () => navigate(`/${res.slug}`),
-      });
-    }
-  });
-
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!cover?.url) {
+      return;
+    }
 
     const formData = new FormData(e.target);
 
@@ -53,7 +41,7 @@ const Write = () => {
       content: value
     };
 
-    mutation.mutate(data);
+    createPost(data, queryClient, (slug) => navigate(`/${slug}`));
   };
 
 
@@ -109,12 +97,11 @@ const Write = () => {
         </div>
 
         <button
-          disabled={mutation.isPending || (progress > 0 && progress < 100)}
+          disabled={isMutating || (progress > 0 && progress < 100)}
           className='bg-blue-800 text-white font-medium rounded-xl mt-4 p-2 w-36 disabled:bg-blue-400 disabled:cursor-not-allowed'
         >
-          {mutation.isPending ? "Loading..." : "Send"}
+          {isMutating ? "Loading..." : "Send"}
         </button>
-        {/* {mutation.isError && <span className='text-red-500'>{mutation.error.message}</span>} */}
       </form>
     </div>
   )
