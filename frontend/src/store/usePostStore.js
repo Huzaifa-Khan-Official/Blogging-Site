@@ -4,10 +4,25 @@ import { toast } from "react-toastify";
 
 export const usePostStore = create((set) => {
   return {
+    isFetching: false,
     isMutating: false,
     isSaveMutating: false,
     isFeatureMutating: false,
     isDeleteMutating: false,
+    isUpdating: false,
+    post: null,
+
+    fetchPost: async (slug) => {
+      set({ isFetching: true });
+      try {
+        const response = await axiosInstance.get(`/posts/${slug}`);
+        set({ isFetching: false, post: response.data });
+      } catch (error) {
+        toast.error(error.response.data.message);
+      } finally {
+        set({ isFetching: false });
+      }
+    },
 
     createPost: async (newPost, queryClient, onSuccess) => {
       try {
@@ -23,6 +38,23 @@ export const usePostStore = create((set) => {
         toast.error(error.response.data.message);
       } finally {
         set({ isMutating: false });
+      }
+    },
+
+    updatePost: async (id, updatedPost, queryClient, onSuccess) => {
+      try {
+        set({ isUpdating: true });
+        const res = await axiosInstance.put(`/posts/${id}`, updatedPost);
+        queryClient.invalidateQueries(['posts']);
+        toast.success('Post updated successfully!', {
+          autoClose: 1000,
+          onClose: () => onSuccess(res.data.slug)
+        });
+      } catch (error) {
+        toast.error(error.response.data.message);
+      }
+      finally {
+        set({ isUpdating: false });
       }
     },
 

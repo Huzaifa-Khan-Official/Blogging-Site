@@ -5,12 +5,11 @@ import PostMenuActions from '../components/PostMenuActions'
 import Search from '../components/Search'
 import Comments from '../components/Comments'
 import { useQuery } from '@tanstack/react-query'
-import configuration from '../configuration/config'
-import axios from 'axios'
 import { format } from 'timeago.js'
+import { axiosInstance } from '../lib/axios'
 
 const fetchPost = async (slug) => {
-  const response = await axios.get(`${configuration.apiUrl}/posts/${slug}`)
+  const response = await axiosInstance.get(`/posts/${slug}`)
   return response.data;
 }
 

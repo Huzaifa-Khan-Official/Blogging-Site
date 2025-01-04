@@ -37,6 +37,7 @@ export const getUserPosts = async (req, res) => {
         const posts = await Post.find({ user: userId })
             .populate("user", "username")
             .limit(limit)
+            .sort({ createdAt: -1 })
             .skip((page - 1) * limit);
 
 

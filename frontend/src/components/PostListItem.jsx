@@ -1,28 +1,27 @@
 import React, { useState } from 'react';
 import Image from './Image';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { format } from "timeago.js";
 import { HiDotsVertical } from "react-icons/hi";
 import { usePostStore } from '../store/usePostStore';
-import { toast } from 'react-toastify';
 
-const PostListItem = ({ post, onUpdate, onDelete }) => {
+const PostListItem = ({ post, onDelete }) => {
     const { deletePost } = usePostStore();
     const location = useLocation();
     const [menuOpen, setMenuOpen] = useState(false);
+    const navigate = useNavigate();
 
     const toggleMenu = () => {
         setMenuOpen((prev) => !prev);
     };
 
     const handleUpdate = () => {
-        // onUpdate(post);
-        console.log("Update menu clicked");
+        navigate(`/write/${post.slug}`);
         setMenuOpen(false);
     };
 
     const handleDelete = () => {
-        deletePost(post._id, () => {});
+        deletePost(post._id, () => { });
         setMenuOpen(false);
     };
 

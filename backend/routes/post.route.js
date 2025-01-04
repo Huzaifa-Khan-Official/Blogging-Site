@@ -1,5 +1,5 @@
 import express from "express";
-import { createPost, deletePost, featurePost, getPost, getPosts, uploadAuth } from "../controllers/post.controller.js";
+import { createPost, deletePost, featurePost, getPost, getPosts, updatePost, uploadAuth } from "../controllers/post.controller.js";
 import increaseVisit from "../middlewares/increaseVisit.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
 
@@ -12,9 +12,13 @@ router.route("/")
     .post(protectRoute, createPost);
 
 // Get single post by slug
-router.get("/:slug", increaseVisit, getPost);
-// Delete a single post
-router.delete("/:id", protectRoute, deletePost);
+router.route("/:slug")
+    .get(increaseVisit, getPost);
+
+// Delete/Update a single post
+router.route("/:id")
+    .delete(protectRoute, deletePost)
+    .put(protectRoute, updatePost);
 
 // Feature post
 router.put("/feature", protectRoute, featurePost);

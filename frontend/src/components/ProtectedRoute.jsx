@@ -6,7 +6,6 @@ const ProtectedRoute = ({ children }) => {
     const { authUser } = useAuthStore();
 
     if (!authUser) {
-        // Redirect to login if user is not authenticated
         return <Navigate to="/login" replace />;
     }
 
