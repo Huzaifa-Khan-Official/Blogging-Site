@@ -44,7 +44,7 @@ export const useAuthStore = create((set, get) => ({
         try {
             const res = await axiosInstance.post("/auth/google-signup", data)
             set({ authUser: res.data.data });
-            toast.success("Account created successfully", {
+            toast.success(res.data.message, {
                 autoClose: 2000,
             });
         } catch (error) {

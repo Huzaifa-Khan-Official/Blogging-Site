@@ -53,8 +53,8 @@ const RegisterPage = () => {
 
   return (
     <div className='flex items-center justify-center min-h-[calc(100vh-80px)]'>
-      <div className="my-6 flex items-center pb-6 flex-col bg-gray-50 rounded-2xl justify-center">
-        <div className="w-full sm:w-96 bg-white rounded-2xl shadow-lg p-8">
+      <div className="w-full sm:w-96 my-6 flex items-center pb-6 flex-col bg-gray-50 rounded-2xl justify-center">
+        <div className="w-full bg-white rounded-2xl shadow-lg p-8">
           {/* Header */}
           <div className="text-center mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Create your account</h2>

@@ -107,8 +107,8 @@ export const googleSignup = async (req, res) => {
                     id: newUser._id,
                     username: newUser.username,
                     email: newUser.email,
-                    role: user.role,
-                    img: user.img,
+                    role: newUser.role,
+                    img: newUser.img,
                 }
             })
         } else {

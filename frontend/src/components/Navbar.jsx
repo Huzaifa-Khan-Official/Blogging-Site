@@ -95,12 +95,18 @@ const Navbar = () => {
                     setProfileOpen(false);
                     setEditProfileOpen(true);
                 }}
-                onLogout={logout}
+                onLogout={() => {
+                    setOpen(false);
+                    logout();
+                }}
             />
 
             <ProfileEditDialog
                 isOpen={editProfileOpen}
-                onClose={() => setEditProfileOpen(false)}
+                onClose={() => {
+                    setOpen(false);
+                    setEditProfileOpen(false)
+                }}
                 user={authUser}
             />
         </>
