@@ -1,6 +1,6 @@
 # <a name="Title">MERN Blogging Site</a>
 
-![Blogging Site Mockup](/public/Mockup-Template.png)
+![Blogging Site Mockup](/frontend/public/Mockup-Template.png)
 
 A fully responsive and feature-rich blogging platform built with the MERN stack. This project provides users with an engaging experience for reading, writing, and managing blogs while ensuring smooth performance and modern design.
 

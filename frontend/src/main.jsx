@@ -16,6 +16,7 @@ import ProtectedRoute from './components/ProtectedRoute.jsx'
 import SavedPostsPage from './routes/SavedPostsPage.jsx'
 import MyPostsPage from './routes/MyPostsPage.jsx'
 import Update from './routes/Update.jsx'
+import NotFound from './routes/NotFound.jsx'
 
 const queryClient = new QueryClient();
 
@@ -74,6 +75,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <RegisterPage />
+      },
+      {
+        path: "*",
+        element: <NotFound />
       },
     ]
   }

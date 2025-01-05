@@ -1,12 +1,13 @@
 import React from 'react'
 import Image from '../components/Image'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import PostMenuActions from '../components/PostMenuActions'
 import Search from '../components/Search'
 import Comments from '../components/Comments'
 import { useQuery } from '@tanstack/react-query'
 import { format } from 'timeago.js'
 import { axiosInstance } from '../lib/axios'
+import { toast } from 'react-toastify'
 
 const fetchPost = async (slug) => {
   const response = await axiosInstance.get(`/posts/${slug}`)
@@ -15,6 +16,7 @@ const fetchPost = async (slug) => {
 
 const SinglePostPage = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
 
   const { isPending, error, data } = useQuery({
     queryKey: ['post', slug],
@@ -24,7 +26,18 @@ const SinglePostPage = () => {
   if (isPending) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
 
-  if (!data) return <div>Post not found</div>
+  if (!data?.user) {
+    toast.error("Post Not Found", {
+      autoClose: 1500,
+      onClose: () =>  navigate("/")
+    })
+    return (<div className=''>
+      Post Not Found
+    </div>)
+  };
+
+  console.log("error ==>", data);
+
 
   return (
     <div className='my-8 flex flex-col gap-8'>
@@ -41,26 +54,26 @@ const SinglePostPage = () => {
           <div className='flex items-center gap-2 text-gray-400 text-sm'>
             <span>Written by</span>
             <Link className='text-blue-800'>
-              {data.user.username}
+              {data?.user?.username}
             </Link>
             <span>on</span>
             <Link className='text-blue-800'>
-              {data.category}
+              {data?.category}
             </Link>
-            <span>{format(data.createdAt)}</span>
+            <span>{format(data?.createdAt)}</span>
           </div>
 
           {/* description */}
           <p className='text-gray-500 font-medium'>
-            {data.desc}
+            {data?.desc}
           </p>
 
         </div>
 
         {/* Image */}
-        {data.img && <div className='hidden md:flex w-2/5 items-center xl:items-start'>
+        {data?.img && <div className='hidden md:flex w-2/5 items-center xl:items-start'>
           <Image
-            src={data.img}
+            src={data?.img}
             className='rounded-2xl'
             w={600}
           />
@@ -94,7 +107,7 @@ const SinglePostPage = () => {
               }
 
               <Link className='text-blue-800'>
-                {data.user.username}
+                {data?.user?.username}
               </Link>
             </div>
 

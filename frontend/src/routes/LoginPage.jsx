@@ -120,7 +120,7 @@ const LoginPage = () => {
                 {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
               </div>
             </div>
-            <p className="text-red-500 text-xs italic mb-4">{errors.password && errors.password.message}</p>
+            <p className="text-red-500 text-xs italic mb-4 w-full break-words">{errors.password && errors.password.message}</p>
 
 
             {/* Continue Button */}
