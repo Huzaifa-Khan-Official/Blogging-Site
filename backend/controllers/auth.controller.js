@@ -31,6 +31,8 @@ export const signup = async (req, res) => {
             username,
             email,
             password: hashedPassword,
+            role: "user",
+            img: "",
         });
 
         if (newUser) {
@@ -43,8 +45,8 @@ export const signup = async (req, res) => {
                     id: newUser._id,
                     username: newUser.username,
                     email: newUser.email,
-                    role: "",
-                    img: "",
+                    role: newUser.role,
+                    img: newUser.img,
                 }
             })
         } else {
@@ -90,7 +92,9 @@ export const googleSignup = async (req, res) => {
         const newUser = new User({
             username,
             email,
-            isVerified
+            isVerified,
+            role: "user",
+            img: "",
         });
 
         if (newUser) {
@@ -113,7 +117,7 @@ export const googleSignup = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log("Error in signup controller", error.message);
+        console.log("Error in google signup/login controller", error.message);
         res.status(500).json({
             message: "Internal server error"
         });
