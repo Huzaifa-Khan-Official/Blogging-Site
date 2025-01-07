@@ -7,6 +7,7 @@ import Upload from '../components/Upload';
 import Image from "../components/Image";
 import { usePostStore } from "../store/usePostStore";
 import { useAuthStore } from "../store/useAuthStore";
+import configuration from "../configuration/config";
 
 const Update = () => {
     const { slug } = useParams();
@@ -18,6 +19,7 @@ const Update = () => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { authUser } = useAuthStore();
+    const [handleSubmitState, setHanldeSubmitState] = useState(false);
     const { fetchPost, post, updatePost, isUpdating } = usePostStore();
 
     useEffect(() => {
@@ -29,7 +31,7 @@ const Update = () => {
     useEffect(() => {
         if (post) {
             setValue(post.content || '');
-            setCover(post.img ? { url: post.img, filePath: post.img } : null);
+            setCover(post.img);
         }
     }, [post]);
 
@@ -47,15 +49,16 @@ const Update = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setHanldeSubmitState(true);
 
-        if (!cover) {
+        if (!handleSubmitState) {
             return;
         }
 
         const formData = new FormData(e.target);
 
         const data = {
-            img: cover.filePath,
+            img: cover,
             title: formData.get('title'),
             category: formData.get('category'),
             desc: formData.get('desc'),
@@ -65,26 +68,23 @@ const Update = () => {
         updatePost(post._id, data, queryClient, (slug) => navigate(`/${slug}`));
     };
 
-    const updateCover = (uploadRes) => {
-        setCover({ url: uploadRes.url, filePath: uploadRes.filePath });
-    };
-
-    // if (post?.user?._id !== authUser._id) {
-    //     navigate('/');
-    //     return null;
-    // }
+    const handleSetCover = (res) => {
+        setCover(res?.filePath);
+    }
 
     return (
         <div className='mt-6 min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] flex flex-col gap-6'>
             <h1 className='text-xl font-light'>Update Post</h1>
 
             <form onSubmit={handleSubmit} className='flex flex-col gap-6 flex-1 mb-20'>
-                <Upload type="image" setProgress={setProgress} setData={updateCover}>
+                <Upload type="image" setProgress={setProgress} setData={handleSetCover}>
                     <button className='w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white'>
                         Add a cover image
                     </button>
                 </Upload>
-                {cover && <Image src={cover.url} alt="Cover" className='w-80 aspect-cover' />}
+                {cover && (
+                    <img src={`${configuration.imageKitUrlEndPoint}/${cover}`} alt="Cover" className='w-80 aspect-cover' />
+                )}
 
                 <input
                     type="text"

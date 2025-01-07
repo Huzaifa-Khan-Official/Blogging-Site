@@ -36,9 +36,6 @@ const SinglePostPage = () => {
     </div>)
   };
 
-  console.log("error ==>", data);
-
-
   return (
     <div className='my-8 flex flex-col gap-8'>
       {/* details */}

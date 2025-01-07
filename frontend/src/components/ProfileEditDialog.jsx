@@ -5,9 +5,8 @@ import Image from './Image';
 import { useAuthStore } from '../store/useAuthStore';
 import Upload from './Upload';
 
-export function ProfileEditDialog({ isOpen, onClose, user }) {
+export function ProfileEditDialog({ isOpen, onClose, user, selectedImg, setSelectedImg }) {
     const { updateProfile, isUpdatingProfile, authUser } = useAuthStore();
-    const [selectedImg, setSelectedImg] = useState(null);
     const [progress, setProgress] = useState(0);
     const [isEditing, setIsEditing] = useState(false);
     const [isEditingTitle, setIsEditingTitle] = useState(false);

@@ -11,12 +11,13 @@ const Navbar = () => {
     const { authUser, logout } = useAuthStore();
     const [open, setOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
+    const [selectedImg, setSelectedImg] = useState(null);
     const [editProfileOpen, setEditProfileOpen] = useState(false);
     const location = useLocation();
 
     useEffect(() => {
         setOpen(false);
-    }, [location])
+    }, [location]);
 
     const navLinks = [
         { to: "/", label: "Home" },
@@ -28,17 +29,15 @@ const Navbar = () => {
     return (
         <>
             <div className='w-full h-16 md:h-20 flex items-center justify-between md:border-b-gray-700 md:border-b-2 pt-3 pb-0'>
-                {/* logo */}
+                {/* Logo */}
                 <Link className='flex items-center gap-4 text-2xl font-bold ' to="/">
                     <Image src="logo.png" alt="logo" w={32} h={32} />
                     <span>Blog Site</span>
                 </Link>
 
-                {/* mobile Menu */}
+                {/* Mobile Menu */}
                 <div className='md:hidden'>
-                    <div className='cursor-pointer text-2xl' onClick={() => {
-                        setOpen((prev) => !prev);
-                    }}>
+                    <div className='cursor-pointer text-2xl' onClick={() => setOpen((prev) => !prev)}>
                         {open ? <ImCross /> : <GiHamburgerMenu />}
                     </div>
 
@@ -52,19 +51,28 @@ const Navbar = () => {
                                 </Link>
                             </div>
                         ))}
+                        <Link to="/write">
+                            <button className='py-2 px-4 rounded-3xl bg-blue-800 hover:bg-blue-600 text-white'>Write Blog</button>
+                        </Link>
                         {!authUser ? (
                             <Link to="/login">
-                                <button className='py-2 px-4 rounded-3xl bg-blue-800 text-white'>Login 👋</button>
+                                <button className='py-2 px-4 rounded-3xl bg-blue-800 hover:bg-blue-600 text-white'>Login 👋</button>
                             </Link>
                         ) : (
                             <div onClick={() => setProfileOpen(true)} className='cursor-pointer'>
-                                <Image src={authUser?.img || "user.png"} alt="profile" w={36} h={36} className=' rounded-full' />
+                                {selectedImg ? (<img
+                                    src={selectedImg.url}
+                                    alt="Profile"
+                                    className="rounded-full w-10 h-10"
+                                />) : (
+                                    <Image src={authUser?.img || "user.png"} alt="profile" w={36} h={36} className='rounded-full w-10 h-10' />
+                                )}
                             </div>
                         )}
                     </div>
                 </div>
 
-                {/* desktop Menu */}
+                {/* Desktop Menu */}
                 <div className='hidden md:flex items-center gap-8 xl:gap-12 font-medium'>
                     {navLinks.map((link, index) => (
                         <div key={index} className="relative group">
@@ -77,11 +85,17 @@ const Navbar = () => {
                     ))}
                     {!authUser ? (
                         <Link to="/login">
-                            <button className='py-2 px-4 rounded-3xl bg-blue-800 text-white'>Login 👋</button>
+                            <button className='py-2 px-4 rounded-3xl bg-blue-800 hover:bg-blue-600 text-white'>Login 👋</button>
                         </Link>
                     ) : (
-                        <div onClick={() => setProfileOpen(true)} className='cursor-pointer'>
-                            <Image src={authUser?.img || "user.png"} alt="profile" w={36} h={36} className=' rounded-full' />
+                        <div onClick={() => setProfileOpen(true)} className='cursor-pointer rounded-full w-10 h-10'>
+                            {selectedImg ? (<img
+                                src={selectedImg.url}
+                                alt="Profile"
+                                className="w-full h-full rounded-full"
+                            />) : (
+                                <Image src={authUser?.img || "user.png"} alt="profile" className='rounded-full w-full h-full' />
+                            )}
                         </div>
                     )}
                 </div>
@@ -105,12 +119,14 @@ const Navbar = () => {
                 isOpen={editProfileOpen}
                 onClose={() => {
                     setOpen(false);
-                    setEditProfileOpen(false)
+                    setEditProfileOpen(false);
                 }}
                 user={authUser}
+                selectedImg={selectedImg}
+                setSelectedImg={setSelectedImg}
             />
         </>
     );
-}
+};
 
 export default Navbar;
