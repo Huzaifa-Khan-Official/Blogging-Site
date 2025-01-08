@@ -70,3 +70,14 @@ export const deleteComment = async (req, res) => {
     }
 
 }
+
+export const deleteCommentFromBlog = async (req, res) => {
+    try {
+        const { postId } = req.body;
+
+        await Comment.deleteMany({ post: postId });
+        res.json({ message: "Comments deleted from this blog!" });
+    } catch (error) {
+        res.status(409).json({ message: error.message });
+    }
+}
