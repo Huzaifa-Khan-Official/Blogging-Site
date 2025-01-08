@@ -1,6 +1,8 @@
+import { sendEmail } from "../lib/mail.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import UserOTP from "../models/userOTP.model.js";
 
 export const signup = async (req, res) => {
     const { username, email, password } = req.body;
@@ -33,11 +35,14 @@ export const signup = async (req, res) => {
             password: hashedPassword,
             role: "user",
             img: "",
+            isVerified: false,
         });
 
         if (newUser) {
             generateToken(newUser._id, res);
             await newUser.save();
+
+            await sendEmail({ _id: newUser._id, email: newUser.email, username: newUser.username }, res);
 
             res.status(201).json({
                 message: "Signup Successfully",
@@ -213,6 +218,75 @@ export const checkAuth = (req, res) => {
         console.log("Error in checkAuth controller", error.message);
         res.status(500).json({
             message: "Internal server error"
+        })
+    }
+}
+
+export const verifyOTP = async (req, res) => {
+    try {
+        let { userId, otp } = req.body;
+
+        if (!userId || !otp) {
+            throw Error("Empty otp details are not allowed");
+        } else {
+            const verificationResponse = await UserOTP.find({
+                userId
+            })
+
+            if (verificationResponse.length <= 0) {
+                throw Error("Account record does'nt exit or has been verified already. Please sign up or log in.");
+            } else {
+                const { expiresAt } = verificationResponse[0];
+
+                const hashedOTP = verificationResponse[0].otp;
+
+                if (expiresAt < Date.now()) {
+                    await UserOTP.deleteMany({ userId });
+
+                    throw new Error("Code has expired. Please request again.");
+                } else {
+                    const isOTPMatched = await bcrypt.compare(otp, hashedOTP);
+
+                    if (!isOTPMatched) {
+                        throw new Error("Invalid OTP. Please try again.");
+                    } else {
+                        await User.updateOne({ _id: userId }, { isVerified: true });
+
+                        await UserOTP.deleteMany({ userId });
+
+                        res.status(200).json({
+                            message: "Account verified successfully. You can now login.",
+                        });
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        console.log("Error in verifyOTP controller", error.message);
+        res.status(500).json({
+            status: "FAILED",
+            message: error.message
+        })
+    }
+}
+
+export const resendOTP = async (req, res) => {
+    try {
+        const { userId, email } = req.body;
+
+        if (!userId || !email) {
+            throw Error("Empty user details are not allowed");
+        } else {
+            await UserOTP.deleteMany({ userId });
+
+            await sendEmail({ _id: userId, email }, res);
+        }
+
+    } catch (error) {
+        console.log("Error in resendOTP controller", error.message);
+        res.status(500).json({
+            status: "FAILED",
+            message: error.message
         })
     }
 }
