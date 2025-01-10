@@ -7,6 +7,8 @@ const ProtectedRoute = ({ children }) => {
 
     if (!authUser) {
         return <Navigate to="/login" replace />;
+    } else if (authUser.isVerified === false) {
+        return <Navigate to="/verify" replace />;
     }
 
     return children;

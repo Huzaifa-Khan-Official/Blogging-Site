@@ -52,6 +52,7 @@ export const signup = async (req, res) => {
                     email: newUser.email,
                     role: newUser.role,
                     img: newUser.img,
+                    isVerified: false,
                 }
             })
         } else {
@@ -114,6 +115,7 @@ export const googleSignup = async (req, res) => {
                     email: newUser.email,
                     role: newUser.role,
                     img: newUser.img,
+                    isVerified: true,
                 }
             })
         } else {
@@ -159,6 +161,7 @@ export const login = async (req, res) => {
                 email: user.email,
                 role: user.role,
                 img: user.img ? user.img : "",
+                isVerified: user.isVerified,
             },
         })
     } catch (error) {
@@ -202,6 +205,7 @@ export const updateProfile = async (req, res) => {
             role: updatedUser.role,
             img: updatedUser.img,
             title: updatedUser.title,
+            isVerified: updatedUser.isVerified,
         });
     } catch (error) {
         console.log("Error in update profile controller", error.message);
@@ -224,7 +228,8 @@ export const checkAuth = (req, res) => {
 
 export const verifyOTP = async (req, res) => {
     try {
-        let { userId, otp } = req.body;
+        const userId = req.user._id;
+        const { otp } = req.body;
 
         if (!userId || !otp) {
             throw Error("Empty otp details are not allowed");
@@ -250,12 +255,21 @@ export const verifyOTP = async (req, res) => {
                     if (!isOTPMatched) {
                         throw new Error("Invalid OTP. Please try again.");
                     } else {
-                        await User.updateOne({ _id: userId }, { isVerified: true });
+                        const updatedUser = await User.findByIdAndUpdate(userId,
+                            { isVerified: true },
+                            { new: true }
+                        );
 
                         await UserOTP.deleteMany({ userId });
 
                         res.status(200).json({
-                            message: "Account verified successfully. You can now login.",
+                            _id: updatedUser._id,
+                            username: updatedUser.username,
+                            email: updatedUser.email,
+                            role: updatedUser.role,
+                            img: updatedUser.img,
+                            title: updatedUser.title,
+                            isVerified: updatedUser.isVerified,
                         });
                     }
                 }
@@ -272,7 +286,7 @@ export const verifyOTP = async (req, res) => {
 
 export const resendOTP = async (req, res) => {
     try {
-        const { userId, email } = req.body;
+        const { _id: userId, email } = req.user;
 
         if (!userId || !email) {
             throw Error("Empty user details are not allowed");
@@ -281,7 +295,6 @@ export const resendOTP = async (req, res) => {
 
             await sendEmail({ _id: userId, email }, res);
         }
-
     } catch (error) {
         console.log("Error in resendOTP controller", error.message);
         res.status(500).json({

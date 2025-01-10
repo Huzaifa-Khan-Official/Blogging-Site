@@ -16,10 +16,8 @@ router.post("/logout", logout);
 
 router.get("/check", protectRoute, checkAuth);
 
-router.route("/verifyOTP")
-    .post(verifyOTP);
+router.post("/verifyOTP", protectRoute, verifyOTP);
 
-router.route("/resendOTP")
-    .post(resendOTP);
+router.post("/resendOTP", protectRoute, resendOTP);
 
 export default router;

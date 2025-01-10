@@ -17,6 +17,7 @@ import SavedPostsPage from './routes/SavedPostsPage.jsx'
 import MyPostsPage from './routes/MyPostsPage.jsx'
 import Update from './routes/Update.jsx'
 import NotFound from './routes/NotFound.jsx'
+import OTPVerificationPage from './routes/OTPVerificationPage.jsx'
 
 const queryClient = new QueryClient();
 
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
       {
         path: "*",
         element: <NotFound />
+      },
+      {
+        path: "/verify",
+        element: <OTPVerificationPage />
       },
     ]
   }

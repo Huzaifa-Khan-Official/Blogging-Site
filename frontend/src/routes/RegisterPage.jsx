@@ -14,6 +14,7 @@ const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -48,6 +49,7 @@ const RegisterPage = () => {
   };
 
   const onSubmit = async (data) => {
+    navigate("/verify");
     signup(data);
   }
 
