@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
 
 // Routes
 import userRouter from "../routes/user.route.js";
@@ -17,6 +19,8 @@ const port = serverConfig.port || 3000;
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(helmet());
+app.use(mongoSanitize());
 
 const allowedOrigins = [process.env.AllowedOrigin1, process.env.AllowedOrigin2];
 
@@ -38,7 +42,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use("/users",userRouter);
+app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/posts", postRouter);
 app.use("/comments", commentRouter);
