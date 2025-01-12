@@ -42,9 +42,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+app.use("/posts", postRouter);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
-app.use("/posts", postRouter);
 app.use("/comments", commentRouter);
 
 app.use((error, req, res, next) => {

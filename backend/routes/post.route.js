@@ -6,8 +6,6 @@ import { rateLimiter } from "../lib/rateLimiter.js";
 
 const router = express.Router();
 
-router.get("/upload-auth", uploadAuth);
-
 router.route("/")
     .get(getPosts)
     .post(protectRoute, rateLimiter(5 * 60 * 1000, 5, "Too many requests to handle. Please try again after 5 minitues"), createPost);
@@ -15,6 +13,8 @@ router.route("/")
 // Get single post by slug
 router.route("/:slug")
     .get(increaseVisit, getPost);
+
+router.get("/upload-auth", uploadAuth);
 
 // Delete/Update a single post
 router.route("/:id")
