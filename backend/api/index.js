@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import path from "path";
 
 // Routes
 import userRouter from "../routes/user.route.js";
@@ -15,6 +16,7 @@ import serverConfig from "../Configurations/server.config.js";
 const app = express();
 dotenv.config();
 const port = serverConfig.port || 3000;
+const __dirname = path.resolve();
 
 app.use(express.json());
 app.use(cookieParser());
@@ -55,6 +57,14 @@ app.use((error, req, res, next) => {
         stack: error.stack
     });
 })
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+    })
+}
 
 app.listen(port, () => {
     connectDB();
